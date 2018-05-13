@@ -1,6 +1,7 @@
 package connection;
 
 import org.json.simple.JSONObject;
+import Message.Message;
 //import simulation.ActionLeftRight;
 import java.io.*;
 import java.net.*;
