@@ -2,12 +2,20 @@ package middleware;
 
 import connection.ReceiverConnection;
 import message.Message;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import java.io.*;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.SocketException;
 
 public class MiddlewareStub extends ReceiverConnection {
+    JSONArray jsonArray;
+
+    public MiddlewareStub( ) {
+        this.jsonArray = new JSONArray();
+    }
 
     public void doConnect(){
         try {
@@ -38,9 +46,18 @@ public class MiddlewareStub extends ReceiverConnection {
         }
     }
 
+    public JSONArray getJsonArray() {
+        return jsonArray;
+    }
+
     private void marshelling(Message m){
-        //TODO - Generate JSON file
         System.out.println("[STATUS] - Received " +" [ID:" + m.getTransactionID()+"] " + m.getMessage() + " - " + m.getSlide() + "%");
+        JSONObject obj = new JSONObject();
+        obj.put("id", m.getTransactionID());
+        obj.put("move", "horizontal");
+        obj.put("value", m.getSlide());
+
+        jsonArray.add(obj);
     }
 
 
