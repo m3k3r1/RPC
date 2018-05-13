@@ -2,7 +2,6 @@ package middleware;
 
 import connection.ReceiverConnection;
 import message.Message;
-
 import java.io.*;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -35,6 +34,12 @@ public class MiddlewareStub extends ReceiverConnection {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static void main(String[] args){
+        MiddlewareStub stub = new MiddlewareStub();
+        stub.doConnect();
+        new Thread(stub).start();
     }
 }
 
