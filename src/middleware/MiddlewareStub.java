@@ -51,13 +51,13 @@ public class MiddlewareStub extends ReceiverConnection {
     }
 
     private void marshelling(Message m){
-        System.out.println("[STATUS] - Received " +" [ID:" + m.getTransactionID()+"] " + m.getMessage() + " - " + m.getSlide() + "%");
         JSONObject obj = new JSONObject();
         obj.put("id", m.getTransactionID());
         obj.put("move", "horizontal");
         obj.put("value", m.getSlide());
 
         jsonArray.add(obj);
+        System.out.println("[RECEIVED] " + obj);
     }
 
 
