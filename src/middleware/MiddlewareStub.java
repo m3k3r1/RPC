@@ -8,6 +8,7 @@ import java.net.InetAddress;
 import java.net.SocketException;
 
 public class MiddlewareStub extends ReceiverConnection {
+
     public void doConnect(){
         try {
             this.doReceiverConnection(7798);
@@ -28,13 +29,19 @@ public class MiddlewareStub extends ReceiverConnection {
                 packet = new DatagramPacket(buf, buf.length, address, port);
 
                 ObjectInputStream iStream = new ObjectInputStream(new ByteArrayInputStream(buf));
-                Message messageClass = (Message) iStream.readObject();
+                marshelling((Message) iStream.readObject());
+
                 iStream.close();
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }
     }
+
+    private void marshelling(Message m){
+        //TODO - Generate JSON file
+    }
+
 
     public static void main(String[] args){
         MiddlewareStub stub = new MiddlewareStub();
