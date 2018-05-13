@@ -1,5 +1,6 @@
 package connection;
 
+import Message.Message;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
