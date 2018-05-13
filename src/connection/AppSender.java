@@ -43,7 +43,7 @@ public class AppSender implements IConnection{
     }
 
     @Override
-    public void sendMessage(JSONObject msg, int port) throws IOException {
+    public void sendMessageJSON(JSONObject msg, int port) throws IOException {
 
     }
 
