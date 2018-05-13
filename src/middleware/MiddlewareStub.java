@@ -40,6 +40,7 @@ public class MiddlewareStub extends ReceiverConnection {
 
     private void marshelling(Message m){
         //TODO - Generate JSON file
+        System.out.println("[STATUS] - Received " +" [ID:" + m.getTransactionID()+"] " + m.getMessage() + " - " + m.getSlide() + "%");
     }
 
 

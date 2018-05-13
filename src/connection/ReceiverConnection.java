@@ -1,5 +1,7 @@
 package connection;
 
+import message.Message;
+
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.SocketException;
@@ -15,7 +17,7 @@ public class ReceiverConnection implements IConnection, Runnable {
     }
 
     @Override
-    public void sendMessage(String msg, int port) throws IOException {
+    public void sendMessage(Message msg, int port) throws IOException {
         System.err.print("[ERROR] - Method not allowed");
 
     }

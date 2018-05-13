@@ -6,12 +6,23 @@ public class Message implements Serializable{
     private String message;
     private int slide;
 
+    public int getTransactionID() {
+        return transactionID;
+    }
+
+    public void setTransactionID(int transactionID) {
+        this.transactionID = transactionID;
+    }
+
+    int transactionID;
+
     public Message() {
     }
 
-    public Message(String message, int slide){
+    public Message(String message,int transactionID,  int slide){
         this.message = message;
         this.slide = slide;
+        this.transactionID = transactionID;
     }
 
     public String getMessage() {
