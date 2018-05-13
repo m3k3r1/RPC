@@ -1,28 +1,22 @@
 package connection;
 
-import org.json.simple.JSONObject;
-
 import java.io.IOException;
-import Message.Message;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-public class ReceiverConnection implements IConnection {
-    DatagramSocket socket;
+public class ReceiverConnection implements IConnection, Runnable {
+    protected DatagramSocket socket;
+    protected byte[] buf = new byte[256];
 
     @Override
     public void doSenderConnection() throws SocketException, UnknownHostException {
-        System.out.print("[ERROR] - Method not allowed");
+        System.err.print("[ERROR] - Method not allowed");
     }
 
     @Override
-    public void sendMessage(Message msg, int port) throws IOException {
-
-    }
-
-    @Override
-    public void sendMessageJSON(JSONObject msg, int port) throws IOException {
+    public void sendMessage(String msg, int port) throws IOException {
+        System.err.print("[ERROR] - Method not allowed");
 
     }
 
@@ -33,6 +27,11 @@ public class ReceiverConnection implements IConnection {
 
     @Override
     public void close() {
+
+    }
+
+    @Override
+    public void run() {
 
     }
 }

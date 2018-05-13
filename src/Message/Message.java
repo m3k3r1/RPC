@@ -1,8 +1,13 @@
-package Message;
+package message;
 
-public class Message{
+import java.io.Serializable;
+
+public class Message implements Serializable{
     private String message;
     private int slide;
+
+    public Message() {
+    }
 
     public Message(String message, int slide){
         this.message = message;
