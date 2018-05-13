@@ -13,7 +13,7 @@ public class SenderConnection implements IConnection {
     }
 
     @Override
-    public void sendMessage(String msg, int port) throws IOException {
+    public void sendMessage(Message msg, int port) throws IOException {
 
     }
 

@@ -18,14 +18,18 @@ public class ConnectionAdapter implements IConnection {
     }
 
     @Override
-    public void sendMessage(String msg, int port) throws IOException {
-        buf = msg.getBytes("UTF-8");
+    public void sendMessage(Message msg, int port) throws IOException {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        ObjectOutput oo = new ObjectOutputStream(stream);
+        oo.writeObject(msg);
+        oo.close();
+        buf = stream.toByteArray();
         DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
         socket.send(packet);
     }
 
     @Override
-    public void sendMessage(JSONObject msg, int port) throws IOException{
+    public void sendMessageJSON(JSONObject msg, int port) throws IOException{
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         ObjectOutput oo = new ObjectOutputStream(stream);
         oo.writeObject(msg);
