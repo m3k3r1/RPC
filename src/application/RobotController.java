@@ -13,7 +13,7 @@ public class RobotController extends SenderConnection{
     public RobotController() {
         try {
             this.doSenderConnection();
-            this.sendMessage((String)Inet4Address.getLocalHost().getHostAddress(),7797);
+            this.sendMessage((String)Inet4Address.getLocalHost().getHostAddress(),7794);
         } catch (SocketException e) {
             e.printStackTrace();
         } catch (UnknownHostException e) {

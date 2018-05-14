@@ -13,8 +13,8 @@ import java.net.SocketException;
 public class MiddlewareHorizontalSkeleton {
 
     public MiddlewareHorizontalSkeleton(){
-        new Thread(new listenerStubAndActionPerformer()).start();
-        //new Thread(new listenerRobotAndRegisterNameService()).start();
+        //new Thread(new listenerStubAndActionPerformer()).start();
+        new Thread(new listenerRobotAndRegisterNameService()).start();
     }
 
     public class listenerStubAndActionPerformer implements Runnable{
@@ -85,7 +85,7 @@ public class MiddlewareHorizontalSkeleton {
         }
     }
 
-    /*public class listenerRobotAndRegisterNameService implements Runnable{
+    public class listenerRobotAndRegisterNameService implements Runnable{
 
         protected DatagramSocket socket;
         protected InetAddress address;
@@ -99,7 +99,7 @@ public class MiddlewareHorizontalSkeleton {
         //Connection to the robot
         public void doConnect(){
             try {
-                socket = new DatagramSocket(7797);
+                socket = new DatagramSocket(7794);
             } catch (SocketException e) {
                 System.err.print("[ERROR] - Couldn't create socket");
             }
@@ -109,6 +109,8 @@ public class MiddlewareHorizontalSkeleton {
         private void nameServiceRegister(String ip) throws IOException {
             socket = new DatagramSocket();
             address = InetAddress.getByName("localhost");
+            ip = ip.substring(7,ip.length());
+            System.out.println(ip);
             sendMessage(ip);
 
         }
@@ -137,7 +139,7 @@ public class MiddlewareHorizontalSkeleton {
             }
         }
     }
-    */
+
     public static void main(String[] args){
         MiddlewareHorizontalSkeleton skeleton = new MiddlewareHorizontalSkeleton();
     }
