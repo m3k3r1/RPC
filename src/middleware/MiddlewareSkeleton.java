@@ -34,20 +34,22 @@ public class MiddlewareSkeleton {
 
         //unmarshall of the message
         private void unmarshalling(JSONObject object) throws IOException {
-            String id = (String) object.get("id");
+            int id = (int) object.get("id");
             String move = (String) object.get("move");
-            String value = (String) object.get("value");
+            int value = (int) object.get("value");
             String ip = (String) object.get("ip");
+            //String ip = " ";
 
             System.out.println("[RECEIVED] " + object);
             actionPerformer(move, value, ip);
         }
 
         //open connection and prepare to send message
-        private void actionPerformer(String move, String value, String ip) throws IOException {
+        private void actionPerformer(String move, int value, String ip) throws IOException {
             socket = new DatagramSocket();
             address = InetAddress.getByName(ip);
             String msg = new StringBuilder(move).append(",").append(value).toString();
+            System.out.println(msg);
             sendMessage(msg);
 
         }
