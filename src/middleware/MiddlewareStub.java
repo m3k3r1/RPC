@@ -13,6 +13,7 @@ import java.net.SocketException;
 public class MiddlewareStub extends ReceiverConnection {
     JSONArray jsonArray;
 
+
     public MiddlewareStub( ) {
         this.jsonArray = new JSONArray();
     }

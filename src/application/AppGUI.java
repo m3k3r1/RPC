@@ -10,18 +10,51 @@ import org.cads.ev3.rmi.generated.cadSRMIInterface.IIDLCaDSEV3RMIMoveHorizontal;
 import org.cads.ev3.rmi.generated.cadSRMIInterface.IIDLCaDSEV3RMIMoveVertical;
 import org.cads.ev3.rmi.generated.cadSRMIInterface.IIDLCaDSEV3RMIUltraSonic;
 
-import java.io.IOException;
+import java.io.*;
+import java.net.*;
 
-public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGripper, IIDLCaDSEV3RMIMoveHorizontal, IIDLCaDSEV3RMIMoveVertical, IIDLCaDSEV3RMIUltraSonic, ICaDSRMIConsumer {
+public class AppGUI  implements IIDLCaDSEV3RMIMoveGripper, IIDLCaDSEV3RMIMoveHorizontal, IIDLCaDSEV3RMIMoveVertical, IIDLCaDSEV3RMIUltraSonic, ICaDSRMIConsumer, Runnable {
+    CaDSRobotGUISwing gui;
+     DatagramSocket socketToStub;
+     DatagramSocket socketListener;
+     InetAddress stubAddress;
+
+    protected byte[] buf = new byte[256];
+
+    public AppGUI() {
+
+        CaDSRobotGUISwing gui = new CaDSRobotGUISwing(this,this,this,this,this);
+
+        try {
+            socketListener = new DatagramSocket(7793);
+            new Thread(this).start();
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public void sendMessage(Message m){
         try {
-            this.doSenderConnection();
-            this.sendMessage(m,7798);
+            socketToStub = new DatagramSocket();
+            stubAddress = InetAddress.getByName("localhost");
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream(2048);
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(m);
+            oos.close();
+            byte[] buf= baos.toByteArray();
+            DatagramPacket packet = new DatagramPacket(buf, buf.length, stubAddress, 7798);
+            socketToStub.send(packet);
+        } catch (SocketException e) {
+            e.printStackTrace();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
     @Override
     public void register(ICaDSRobotGUIUpdater iCaDSRobotGUIUpdater) {
 
@@ -81,8 +114,25 @@ public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGrippe
         return 0;
     }
 
+    @Override
+    public void run() {
+        while (true) {
+            try {
+                DatagramPacket packet = new DatagramPacket(buf, buf.length);
+                socketListener.receive(packet);
+                InetAddress address = packet.getAddress();
+                int port = packet.getPort();
+                packet = new DatagramPacket(buf, buf.length, address, port);
+                String received = new String(packet.getData(), 0, packet.getLength());
+                gui.addService(received);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public static void main(String[] args){
         AppGUI g = new AppGUI();
-        CaDSRobotGUISwing gui = new CaDSRobotGUISwing(g,g,g,g,g);
+
     }
 }
