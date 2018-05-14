@@ -15,45 +15,33 @@ import java.util.logging.Logger;
  *
  * @author User
  */
-public class RobotController{
+public class RobotController extends SenderConnection{
 
-    private DatagramSocket socketToStub;
-    private InetAddress stubAddress;
-    private byte[] buf;
-
-    private class Sender extends SenderConnection{
-
-        @Override
-        public void doSenderConnection(String nameHost) throws SocketException, UnknownHostException{
-
-            socketToStub = new DatagramSocket();
-            stubAddress = InetAddress.getByName("localhost");
-
-            buf = nameHost.getBytes();
-            DatagramPacket packet = new DatagramPacket(buf, buf.length, address, 4445);
-            try {
-                socket.send(packet);
-            } catch (IOException ex) {
-                Logger.getLogger(RobotController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-        }
+    public RobotController() {
+        new Thread(new SkeletonListener()).start();
     }
 
-
-    private class Receiver extends ReceiverConnection{
-        @Override
-        public void doReceiverConnection(int port) throws SocketException{
+    private class  SkeletonListener extends ReceiverConnection {
+        public SkeletonListener() {
             try {
-                DatagramPacket packet = new DatagramPacket(buf, buf.length);
-                socket.receive(packet);
-                String received= new String(packet.getData(), 0, packet.getLength());
-                System.out.println(received);
-            } catch (IOException ex) {
-                Logger.getLogger(RobotController.class.getName()).log(Level.SEVERE, null, ex);
+                this.doReceiverConnection(7797);
+            } catch (SocketException e) {
+                System.err.print("[ERROR] - Couldn't create socket");
             }
         }
 
+        @Override
+        public void run(){
+            while (true){
+                try {
+                    DatagramPacket packet = new DatagramPacket(buf, buf.length);
+                    socket.receive(packet);
+                    String received= new String(packet.getData(), 0, packet.getLength());
+                    System.out.println(received);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
-
 }
