@@ -17,7 +17,7 @@ public class MiddlewareHorizontalSkeleton {
         new Thread(new listenerRobotAndRegisterNameService()).start();
     }
 
-    public class listenerStubAndActionPerformer implements Runnable{
+    private class listenerStubAndActionPerformer implements Runnable{
 
         protected DatagramSocket socket;
         protected InetAddress address;
@@ -84,8 +84,7 @@ public class MiddlewareHorizontalSkeleton {
             }
         }
     }
-
-    public class listenerRobotAndRegisterNameService implements Runnable{
+    private class listenerRobotAndRegisterNameService implements Runnable{
 
         protected DatagramSocket socket;
         protected InetAddress address;
