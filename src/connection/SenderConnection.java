@@ -30,7 +30,7 @@ public class SenderConnection implements IConnection {
         oos.writeObject(msg);
         oos.close();
         byte[] buf= baos.toByteArray();
-        DatagramPacket packet = new DatagramPacket(buf, buf.length, address, 7798);
+        DatagramPacket packet = new DatagramPacket(buf, buf.length, address, port);
         socket.send(packet);
     }
 
