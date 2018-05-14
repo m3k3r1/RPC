@@ -9,7 +9,7 @@ public class MiddlewareSkeleton {
 
     public MiddlewareSkeleton(){
         new Thread(new listenerStubAndActionPerformer()).start();
-        new Thread(new listenerRobotAndRegisterNameService()).start();
+        //new Thread(new listenerRobotAndRegisterNameService()).start();
     }
 
     public class listenerStubAndActionPerformer implements Runnable{
@@ -80,7 +80,7 @@ public class MiddlewareSkeleton {
         }
     }
 
-    public class listenerRobotAndRegisterNameService implements Runnable{
+    /*public class listenerRobotAndRegisterNameService implements Runnable{
 
         protected DatagramSocket socket;
         protected InetAddress address;
@@ -132,7 +132,7 @@ public class MiddlewareSkeleton {
             }
         }
     }
-
+    */
     public static void main(String[] args){
         MiddlewareSkeleton skeleton = new MiddlewareSkeleton();
     }
