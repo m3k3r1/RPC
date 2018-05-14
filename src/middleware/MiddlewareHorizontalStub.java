@@ -6,17 +6,18 @@ import message.Message;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
-import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
 
-public class MiddlewareStub  extends SenderConnection {
+public class MiddlewareHorizontalStub extends SenderConnection {
     JSONArray jsonArray;
     ArrayList<String> hosts;
 
-    public MiddlewareStub( ) {
+    public MiddlewareHorizontalStub( ) {
         this.jsonArray = new JSONArray();
         hosts = new ArrayList<>();
         new Thread(new GUIListener()).start();
@@ -111,8 +112,6 @@ public class MiddlewareStub  extends SenderConnection {
     }
 
     public static void main(String[] args){
-        MiddlewareStub stub = new MiddlewareStub();
+        MiddlewareHorizontalStub stub = new MiddlewareHorizontalStub();
     }
 }
-
-
