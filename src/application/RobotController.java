@@ -4,17 +4,8 @@ import connection.ReceiverConnection;
 import connection.SenderConnection;
 import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-/**
- *
- * @author User
- */
 public class RobotController extends SenderConnection{
 
     public RobotController() {
@@ -43,5 +34,9 @@ public class RobotController extends SenderConnection{
                 }
             }
         }
+    }
+
+    public static void main(String[] args){
+        RobotController robot = new RobotController();
     }
 }
