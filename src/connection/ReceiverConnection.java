@@ -22,7 +22,7 @@ public class ReceiverConnection implements IConnection, Runnable {
     }
 
     @Override
-    public void sendMessage(Message msg, int port) throws IOException {
+    public void sendMessage(Object msg, int port) throws IOException {
         System.err.print("[ERROR] - Method not allowed");
 
     }

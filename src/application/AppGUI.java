@@ -40,9 +40,6 @@ public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGrippe
                  try {
                      DatagramPacket packet = new DatagramPacket(buf, buf.length);
                      socketListener.receive(packet);
-                     InetAddress address = packet.getAddress();
-                     int port = packet.getPort();
-                     packet = new DatagramPacket(buf, buf.length, address, port);
                      String received = new String(packet.getData(), 0, packet.getLength());
                      gui.addService(received);
                  } catch (IOException e) {
@@ -52,7 +49,7 @@ public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGrippe
          }
 
      }
-     
+
     public void sendMessage(Message m){
         try {
             this.doSenderConnection();

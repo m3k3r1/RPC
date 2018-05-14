@@ -10,10 +10,8 @@ import java.net.UnknownHostException;
 
 public interface IConnection {
     void doSenderConnection() throws SocketException, UnknownHostException;
-
     void doSenderConnection(String nameHost) throws SocketException, UnknownHostException;
-
-    void sendMessage(Message msg, int port) throws IOException;
+    void sendMessage(Object msg, int port) throws IOException;
     void doReceiverConnection(int port) throws SocketException;
     void close();
 }

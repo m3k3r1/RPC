@@ -20,11 +20,11 @@ public class SenderConnection implements IConnection {
     @Override
     public void doSenderConnection(String nameHost) throws SocketException, UnknownHostException {
         socket = new DatagramSocket();
-        address = InetAddress.getByName("nameHost");
+        address = InetAddress.getByName(nameHost);
     }
 
     @Override
-    public void sendMessage(Message msg, int port) throws IOException {
+    public void sendMessage(Object msg, int port) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream(2048);
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(msg);
