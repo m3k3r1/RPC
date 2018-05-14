@@ -43,7 +43,7 @@ public class MiddlewareStub  extends SenderConnection {
                     marshelling((Message) iStream.readObject());
                     sendMarshelledMessage();
                     iStream.close();
-                } catch (IOException | ClassNotFoundException e) {
+                } catch (IOException | ClassNotFoundException | ClassCastException e) {
                     e.printStackTrace();
                 }
             }
