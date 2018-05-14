@@ -4,11 +4,23 @@ import connection.ReceiverConnection;
 import connection.SenderConnection;
 import java.io.IOException;
 import java.net.DatagramPacket;
+import java.net.Inet4Address;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 
 public class RobotController extends SenderConnection{
 
     public RobotController() {
+        try {
+            this.doSenderConnection();
+            this.sendMessage((String)Inet4Address.getLocalHost().getHostAddress(),7797);
+        } catch (SocketException e) {
+            e.printStackTrace();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         new Thread(new SkeletonListener()).start();
     }
 

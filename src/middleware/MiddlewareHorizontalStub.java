@@ -5,7 +5,6 @@ import connection.SenderConnection;
 import message.Message;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -53,7 +52,7 @@ public class MiddlewareHorizontalStub extends SenderConnection {
     private class NameServerListener extends ReceiverConnection implements Runnable{
         public NameServerListener (){
             try {
-                this.doReceiverConnection(7795);
+                this.doReceiverConnection(7793);
             } catch (SocketException e) {
                 System.err.print("[ERROR] - Couldn't create socket");
             }
