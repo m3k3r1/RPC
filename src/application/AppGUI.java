@@ -9,7 +9,6 @@ import org.cads.ev3.rmi.generated.cadSRMIInterface.IIDLCaDSEV3RMIMoveGripper;
 import org.cads.ev3.rmi.generated.cadSRMIInterface.IIDLCaDSEV3RMIMoveHorizontal;
 import org.cads.ev3.rmi.generated.cadSRMIInterface.IIDLCaDSEV3RMIMoveVertical;
 import org.cads.ev3.rmi.generated.cadSRMIInterface.IIDLCaDSEV3RMIUltraSonic;
-import org.junit.Test;
 
 import java.io.IOException;
 
@@ -85,6 +84,5 @@ public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGrippe
     public static void main(String[] args){
         AppGUI g = new AppGUI();
         CaDSRobotGUISwing gui = new CaDSRobotGUISwing(g,g,g,g,g);
-
     }
 }
