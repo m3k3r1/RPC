@@ -40,8 +40,8 @@ public class MiddlewareHorizontalStub extends SenderConnection {
                     socket.receive(packet);
 
                     ObjectInputStream iStream = new ObjectInputStream(new ByteArrayInputStream(buf));
-                    marshelling((Message) iStream.readObject());
-                    sendMarshelledMessage();
+
+                    sendMarshelledMessage(marshelling((Message) iStream.readObject()));
                     iStream.close();
                 } catch (IOException | ClassNotFoundException | ClassCastException e) {
                     e.printStackTrace();
@@ -52,7 +52,7 @@ public class MiddlewareHorizontalStub extends SenderConnection {
     private class NameServerListener extends ReceiverConnection implements Runnable{
         public NameServerListener (){
             try {
-                this.doReceiverConnection(7793);
+                this.doReceiverConnection(7792);
             } catch (SocketException e) {
                 System.err.print("[ERROR] - Couldn't create socket");
             }
@@ -63,48 +63,37 @@ public class MiddlewareHorizontalStub extends SenderConnection {
                 try {
                     DatagramPacket packet = new DatagramPacket(buf, buf.length);
                     socket.receive(packet);
-
-                    ObjectInputStream iStream = new ObjectInputStream(new ByteArrayInputStream(buf));
-                    ArrayList<String> received = (ArrayList<String>) iStream.readObject();
-                    iStream.close();
-                    setHosts(received);
-                    sendHosts();
-                } catch (IOException | ClassNotFoundException e) {
+                    String received= new String(packet.getData(), 0, packet.getLength());
+                    System.out.print("New Host - " +received.substring(7,received.length()));
+                    sendHosts(received.substring(7,received.length()));
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
     }
 
-    private void sendHosts(){
+    private void sendHosts(String robot){
         try {
             this.doSenderConnection();
-            this.sendMessage(hosts,7793);
+            this.sendMessage(robot,7793);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    private void setHosts(ArrayList<String> hosts) {
-        this.hosts=hosts;
-    }
-    private void marshelling(Message m){
+    private JSONObject marshelling(Message m){
         JSONObject obj = new JSONObject();
         obj.put("id", m.getTransactionID());
         obj.put("move", "horizontal");
         obj.put("value", m.getSlide());
 
-        jsonArray.add(obj);
         System.out.println("[RECEIVED] " + obj);
+        return obj;
     }
-    private void sendMarshelledMessage(){
+    private void sendMarshelledMessage(JSONObject obj){
         try {
             this.doSenderConnection();
-
-            while(!jsonArray.isEmpty()){
-                this.sendMessage(jsonArray.get(0),7799);
-                jsonArray.remove(0);
-            }
-
+            this.sendMessage(obj,7799);
         } catch (IOException e) {
             e.printStackTrace();
         }

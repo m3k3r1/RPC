@@ -51,7 +51,6 @@ public class NameServer extends SenderConnection{
                 e.printStackTrace();
             }
         }
-
         @Override
         public void run(){
             while (true){
@@ -59,7 +58,7 @@ public class NameServer extends SenderConnection{
                     DatagramPacket packet = new DatagramPacket(buf, buf.length);
                     socket.receive(packet);
                     String received= new String(packet.getData(), 0, packet.getLength());
-                    addService(received);
+                    sendIP(getHostname(received));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -70,7 +69,17 @@ public class NameServer extends SenderConnection{
     private void addService(String hostLocation){
         routingTable.put(hostLocation, "Robot"+i);
         System.out.print("[ADDED] " + hostLocation + " as " + routingTable.get(hostLocation) );
+        try {
+            this.doSenderConnection();
+            this.sendMessage(routingTable.get(hostLocation),7792);
 
+        } catch (SocketException e) {
+            e.printStackTrace();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     private void removeService(String hostLocation){
         routingTable.remove(hostLocation);
@@ -84,7 +93,6 @@ public class NameServer extends SenderConnection{
         }
         return null;
     }
-
     private void sendIP(String ip){
         try {
             this.doSenderConnection();
@@ -97,6 +105,7 @@ public class NameServer extends SenderConnection{
             e.printStackTrace();
         }
     }
+
     public static void main(String[] args){
         NameServer dns = new NameServer();
     }

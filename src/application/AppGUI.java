@@ -13,22 +13,22 @@ import org.cads.ev3.rmi.generated.cadSRMIInterface.IIDLCaDSEV3RMIUltraSonic;
 
 import java.io.*;
 import java.net.*;
+import java.util.concurrent.TimeUnit;
 
 public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGripper, IIDLCaDSEV3RMIMoveHorizontal, IIDLCaDSEV3RMIMoveVertical, IIDLCaDSEV3RMIUltraSonic, ICaDSRMIConsumer {
-     CaDSRobotGUISwing gui;
+    CaDSRobotGUISwing gui;
 
      public AppGUI() {
-        CaDSRobotGUISwing gui = new CaDSRobotGUISwing(this,this,this,this,this);
+         gui = new CaDSRobotGUISwing(this,this,this,this,this);
         new Thread(new StubListener()).start();
     }
 
     private class StubListener extends ReceiverConnection implements  Runnable {
-         DatagramSocket socketListener;
-         protected byte[] buf = new byte[256];
+
 
          public StubListener() {
              try {
-                 socketListener = new DatagramSocket(7793);
+                this.doReceiverConnection(7793);
              } catch (SocketException e) {
                  e.printStackTrace();
              }
@@ -39,15 +39,18 @@ public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGrippe
              while (true) {
                  try {
                      DatagramPacket packet = new DatagramPacket(buf, buf.length);
-                     socketListener.receive(packet);
-                     String received = new String(packet.getData(), 0, packet.getLength());
-                     gui.addService(received);
+                     socket.receive(packet);
+                     String received= new String(packet.getData(), 0, packet.getLength());
+                    addService(received);
                  } catch (IOException e) {
                      e.printStackTrace();
                  }
              }
          }
+     }
 
+     synchronized void addService(String s){
+         gui.addService(s);
      }
 
     public void sendMessage(Message m){

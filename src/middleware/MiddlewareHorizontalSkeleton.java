@@ -13,7 +13,7 @@ import java.net.SocketException;
 public class MiddlewareHorizontalSkeleton {
 
     public MiddlewareHorizontalSkeleton(){
-        //new Thread(new listenerStubAndActionPerformer()).start();
+        new Thread(new listenerStubAndActionPerformer()).start();
         new Thread(new listenerRobotAndRegisterNameService()).start();
     }
 
@@ -109,7 +109,7 @@ public class MiddlewareHorizontalSkeleton {
         private void nameServiceRegister(String ip) throws IOException {
             socket = new DatagramSocket();
             address = InetAddress.getByName("localhost");
-            ip = ip.substring(7,ip.length());
+            ip = ip.substring(7,20);
             System.out.println(ip);
             sendMessage(ip);
 
