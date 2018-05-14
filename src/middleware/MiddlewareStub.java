@@ -41,7 +41,7 @@ public class MiddlewareStub  extends SenderConnection {
 
                     ObjectInputStream iStream = new ObjectInputStream(new ByteArrayInputStream(buf));
                     marshelling((Message) iStream.readObject());
-
+                    sendMarshelledMessage();
                     iStream.close();
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
@@ -84,15 +84,9 @@ public class MiddlewareStub  extends SenderConnection {
             e.printStackTrace();
         }
     }
-
     private void setHosts(ArrayList<String> hosts) {
         this.hosts=hosts;
     }
-
-    public JSONArray getJsonArray() {
-        return jsonArray;
-    }
-
     private void marshelling(Message m){
         JSONObject obj = new JSONObject();
         obj.put("id", m.getTransactionID());
@@ -101,6 +95,19 @@ public class MiddlewareStub  extends SenderConnection {
 
         jsonArray.add(obj);
         System.out.println("[RECEIVED] " + obj);
+    }
+    private void sendMarshelledMessage(){
+        try {
+            this.doSenderConnection();
+
+            while(!jsonArray.isEmpty()){
+                this.sendMessage(jsonArray.get(0),7799);
+                jsonArray.remove(0);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args){

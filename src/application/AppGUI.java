@@ -58,7 +58,6 @@ public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGrippe
             e.printStackTrace();
         }
     }
-
     @Override
     public void register(ICaDSRobotGUIUpdater observer) {
         System.out.println("New Observer");
@@ -66,63 +65,52 @@ public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGrippe
         observer.addService("Service 2");
         observer.setChoosenService("Service 2", -1, -1, false);
     }
-
     @Override
     public void update(String s) {
 
     }
-
     @Override
     public int closeGripper(int transactionID) throws Exception {
         System.out.println("Close.... TID: " + transactionID);
         return 0;
     }
-
     @Override
     public int openGripper(int transactionID) throws Exception {
         System.out.println("open.... TID: " + transactionID);
         return 0;
     }
-
     @Override
     public int isGripperClosed() throws Exception {
         return 0;
     }
-
     @Override
     public int moveHorizontalToPercent(int transactionID, int percent) throws Exception {
         System.out.println("Call to move vertical -  TID: " + transactionID + " degree " + percent);
         sendMessage(new Message("horizontal",transactionID,percent));
         return 0;
     }
-
     @Override
     public int moveVerticalToPercent(int transactionID, int percent) throws Exception {
         System.out.println("Call to move vertical -  TID: " + transactionID + " degree " + percent);
         return 0;
     }
-
     @Override
     public int stop(int transactionID) throws Exception {
         System.out.println("Stop movement.... TID: " + transactionID);
         return 0;
     }
-
     @Override
     public int getCurrentVerticalPercent() throws Exception {
         return 0;
     }
-
     @Override
     public int getCurrentHorizontalPercent() throws Exception {
         return 0;
     }
-
     @Override
     public int isUltraSonicOccupied() throws Exception {
         return 0;
     }
-
     public static void main(String[] args){
         AppGUI g = new AppGUI();
     }
