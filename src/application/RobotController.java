@@ -2,13 +2,19 @@ package application;
 
 import connection.ReceiverConnection;
 import connection.SenderConnection;
+import org.cads.ev3.middleware.CaDSEV3RobotHAL;
+
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.lang.reflect.Method;
 import java.net.DatagramPacket;
 import java.net.Inet4Address;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
 public class RobotController extends SenderConnection{
+    protected static CaDSEV3RobotHAL caller;
 
     public RobotController() {
         try {
@@ -21,11 +27,11 @@ public class RobotController extends SenderConnection{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        new Thread(new SkeletonListener()).start();
+        new Thread(new HorizontalSkeletonListener()).start();
     }
 
-    private class  SkeletonListener extends ReceiverConnection {
-        public SkeletonListener() {
+    private class  HorizontalSkeletonListener extends ReceiverConnection {
+        public HorizontalSkeletonListener() {
             try {
                 this.doReceiverConnection(7797);
             } catch (SocketException e) {
@@ -46,6 +52,11 @@ public class RobotController extends SenderConnection{
                 }
             }
         }
+    }
+
+    private void execute(String s){
+        //TODO something like this to get the functionname
+        //Class<?> actionClass = Class.forName("Class" + s.substring(0,1).toUpperCase() + s.substring(1));
     }
 
     public static void main(String[] args){

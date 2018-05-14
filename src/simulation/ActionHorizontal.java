@@ -9,6 +9,15 @@ import org.json.simple.JSONObject;
 
 public class ActionHorizontal  {
     protected static CaDSEV3RobotHAL caller;
+    String lim;
+
+    public ActionHorizontal(String  lim) {
+        this.lim = lim;
+    }
+
+    public void startThread(){
+        new Thread(new ActionThread()).start();
+    }
 
     private class ActionThread implements Runnable, ICaDSEV3RobotStatusListener, ICaDSEV3RobotFeedBackListener {
         @Override
@@ -18,8 +27,9 @@ public class ActionHorizontal  {
         }
         @Override
         public void onStatusMessage(JSONObject arg0) {
-            // horizontalValue = arg0.get("percent").toString();
-
+            // horizontalValue = ;
+            if(arg0.get("percent").toString().equals(lim))
+                caller.stop_h();
         }
         @Override
         public void run() {
@@ -43,4 +53,5 @@ public class ActionHorizontal  {
             System.exit(0);
         }
     }
+
 }

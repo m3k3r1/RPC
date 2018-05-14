@@ -10,23 +10,19 @@ import org.cads.ev3.rmi.generated.cadSRMIInterface.IIDLCaDSEV3RMIMoveGripper;
 import org.cads.ev3.rmi.generated.cadSRMIInterface.IIDLCaDSEV3RMIMoveHorizontal;
 import org.cads.ev3.rmi.generated.cadSRMIInterface.IIDLCaDSEV3RMIMoveVertical;
 import org.cads.ev3.rmi.generated.cadSRMIInterface.IIDLCaDSEV3RMIUltraSonic;
-
 import java.io.*;
 import java.net.*;
-import java.util.concurrent.TimeUnit;
 
 public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGripper, IIDLCaDSEV3RMIMoveHorizontal, IIDLCaDSEV3RMIMoveVertical, IIDLCaDSEV3RMIUltraSonic, ICaDSRMIConsumer {
     CaDSRobotGUISwing gui;
 
      public AppGUI() {
          gui = new CaDSRobotGUISwing(this,this,this,this,this);
-        new Thread(new StubListener()).start();
+        new Thread(new HorizontalStubListener()).start();
     }
 
-    private class StubListener extends ReceiverConnection implements  Runnable {
-
-
-         public StubListener() {
+    private class HorizontalStubListener extends ReceiverConnection implements  Runnable {
+         public HorizontalStubListener() {
              try {
                 this.doReceiverConnection(7793);
              } catch (SocketException e) {
@@ -52,8 +48,7 @@ public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGrippe
      synchronized void addService(String s){
          gui.addService(s);
      }
-
-    public void sendMessage(Message m){
+     public void sendMessage(Message m){
         try {
             this.doSenderConnection();
             this.sendMessage(m,7798);
@@ -114,7 +109,8 @@ public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGrippe
     public int isUltraSonicOccupied() throws Exception {
         return 0;
     }
+
     public static void main(String[] args){
-        AppGUI g = new AppGUI();
+         AppGUI g = new AppGUI();
     }
 }
