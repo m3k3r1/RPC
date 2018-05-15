@@ -1,5 +1,7 @@
 package middleware;
 
+import connection.ReceiverConnection;
+import connection.SenderConnection;
 import org.json.simple.JSONObject;
 
 import java.io.ByteArrayInputStream;
@@ -10,60 +12,22 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 
-public class MiddlewareHorizontalSkeleton {
+public class MiddlewareHorizontalSkeleton extends SenderConnection {
 
     public MiddlewareHorizontalSkeleton(){
         new Thread(new listenerStubAndActionPerformer()).start();
-        new Thread(new listenerRobotAndRegisterNameService()).start();
+        //new Thread(new listenerRobotAndRegisterNameService()).start();
     }
 
-    private class listenerStubAndActionPerformer implements Runnable{
-
-        protected DatagramSocket socket;
-        protected InetAddress address;
-        protected byte[] buf = new byte[256];
+    private class listenerStubAndActionPerformer extends ReceiverConnection implements Runnable{
 
         //Constructor
         public listenerStubAndActionPerformer(){
-            this.doConnect();
-        }
-
-        //start connectin with stub
-        public void doConnect(){
             try {
-                socket = new DatagramSocket(7799);
+                this.doReceiverConnection(7799);
             } catch (SocketException e) {
                 System.err.print("[ERROR] - Couldn't create socket");
             }
-        }
-
-        //unmarshall of the message
-        private void unmarshalling(JSONObject object) throws IOException {
-            int id = (int) object.get("id");
-            String move = (String) object.get("move");
-            int value = (int) object.get("value");
-            String ip = (String) object.get("ip");
-            //String ip = " ";
-
-            System.out.println("[RECEIVED] " + object);
-            actionPerformer(move, value, ip);
-        }
-
-        //open connection and prepare to send message
-        private void actionPerformer(String move, int value, String ip) throws IOException {
-            socket = new DatagramSocket();
-            address = InetAddress.getByName(ip);
-            String msg = new StringBuilder(move).append(",").append(value).toString();
-            System.out.println(msg);
-            sendMessage(msg);
-
-        }
-
-        //send message to Robot
-        private void sendMessage(String msg) throws IOException {
-            byte[] buffer= msg.getBytes();
-            DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, 7797);
-            socket.send(packet);
         }
 
         //thread to receive JSON file
@@ -84,7 +48,8 @@ public class MiddlewareHorizontalSkeleton {
             }
         }
     }
-    private class listenerRobotAndRegisterNameService implements Runnable{
+
+    private class listenerRobotAndRegisterNameService extends ReceiverConnection implements Runnable{
 
         protected DatagramSocket socket;
         protected InetAddress address;
@@ -92,33 +57,11 @@ public class MiddlewareHorizontalSkeleton {
 
         //Constructor
         public listenerRobotAndRegisterNameService(){
-            this.doConnect();
-        }
-
-        //Connection to the robot
-        public void doConnect(){
             try {
-                socket = new DatagramSocket(7794);
+                this.doReceiverConnection(7794);
             } catch (SocketException e) {
                 System.err.print("[ERROR] - Couldn't create socket");
             }
-        }
-
-        //Open connection to nameserver
-        private void nameServiceRegister(String ip) throws IOException {
-            socket = new DatagramSocket();
-            address = InetAddress.getByName("localhost");
-            ip = ip.substring(7,20);
-            System.out.println(ip);
-            sendMessage(ip);
-
-        }
-
-        //send message to name server
-        private void sendMessage(String ip) throws IOException {
-            byte[] buffer= ip.getBytes();
-            DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, 7796);
-            socket.send(packet);
         }
 
         // thread to receive robot ip
@@ -129,7 +72,7 @@ public class MiddlewareHorizontalSkeleton {
                     DatagramPacket packet = new DatagramPacket(buf, buf.length);
                     socket.receive(packet);
 
-                    String ip = new String( packet.getData());
+                    String ip = new String( packet.getData(), 0, packet.getLength());
                     nameServiceRegister(ip);
 
                 } catch (IOException e) {
@@ -137,6 +80,43 @@ public class MiddlewareHorizontalSkeleton {
                 }
             }
         }
+    }
+
+    //unmarshall of the message
+    private void unmarshalling(JSONObject object) throws IOException {
+        int id = (int) object.get("id");
+        String move = (String) object.get("move");
+        int value = (int) object.get("value");
+        String ip = (String) object.get("ip");
+        //String ip = " ";
+
+        String msg = new StringBuilder(move).append(",").append(value).toString();
+        System.out.println(msg);
+        System.out.println("[RECEIVED] " + object);
+        sendMessage(msg, ip);
+    }
+
+    //send message to Robot
+    private void sendMessage(String msg, String ip) throws IOException {
+        try {
+            this.doSenderConnection(ip);
+            this.sendMessage(msg,7797);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Open connection to nameserver
+    private void nameServiceRegister(String ip) throws IOException {
+        ip = ip.substring(7,20);
+
+        try {
+            this.doSenderConnection();
+            this.sendMessage(ip,7796);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public static void main(String[] args){
