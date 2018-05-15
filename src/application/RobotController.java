@@ -3,10 +3,12 @@ package application;
 import connection.ReceiverConnection;
 import connection.SenderConnection;
 import org.cads.ev3.middleware.CaDSEV3RobotHAL;
-
+import simulation.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.DatagramPacket;
 import java.net.Inet4Address;
@@ -47,6 +49,7 @@ public class RobotController extends SenderConnection{
                     socket.receive(packet);
                     String received= new String(packet.getData(), 0, packet.getLength());
                     System.out.println(received);
+                    execute(received);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -55,8 +58,8 @@ public class RobotController extends SenderConnection{
     }
 
     private void execute(String s){
-        //TODO something like this to get the functionname
-        //Class<?> actionClass = Class.forName("Class" + s.substring(0,1).toUpperCase() + s.substring(1));
+        ActionHorizontal h = new ActionHorizontal(s.substring(11, s.length()));
+        h.startThread();
     }
 
     public static void main(String[] args){
