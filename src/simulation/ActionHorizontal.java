@@ -10,17 +10,30 @@ import org.json.simple.JSONObject;
 public class ActionHorizontal  {
     protected static CaDSEV3RobotHAL caller;
     String lim;
+    String orientation;
+    ActionThread a;
 
-    public ActionHorizontal(String  lim) {
+    public ActionHorizontal(String  lim, String orientation) {
         this.lim = lim;
+        this.orientation = orientation;
+         a = new ActionThread();
+    }
+    public ActionHorizontal() {
+         a = new ActionThread();
     }
 
-    public void startThread(){
-        new Thread(new ActionThread()).start();
+    public void moveAround(String orientation, String percent){
+        this.lim = percent;
+        this.orientation = orientation;
+        a.moveAround(orientation,percent);
     }
 
     private class ActionThread implements Runnable, ICaDSEV3RobotStatusListener, ICaDSEV3RobotFeedBackListener {
         boolean pause = false;
+
+        public ActionThread() {
+            caller = CaDSEV3RobotHAL.createInstance(CaDSEV3RobotType.SIMULATION, this, this);
+        }
 
         @Override
         public void giveFeedbackByJSonTo(JSONObject arg0) {
@@ -35,31 +48,22 @@ public class ActionHorizontal  {
                 this.notify();
             }
         }
+
+        public void moveAround(String orientation, String percent){
+            new Thread(this).start();
+        }
+
         @Override
         public void run() {
-            try {
-                caller = CaDSEV3RobotHAL.createInstance(CaDSEV3RobotType.SIMULATION, this, this);
-                boolean on = true;
-                while (!Thread.currentThread().isInterrupted()) {
-                    if (on) {
-                        caller.stop_h();
-                        caller.moveLeft();
-                    } else {
-                        caller.stop_h();
-                        caller.moveRight();
-                    }
-
-                    if(pause)
-                        waithere();
-
-                    on = !on;
-                    Delay.msDelay(5100);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.exit(-1);
+            if(orientation.equals("left")) {
+                caller.stop_h();
+                caller.moveLeft();
+            }else {
+                caller.stop_h();
+                caller.moveRight();
             }
-            System.exit(0);
+
+            Delay.msDelay(2000);
         }
 
         synchronized public void waithere() {
@@ -72,7 +76,7 @@ public class ActionHorizontal  {
     }
 
     public static void main(String[] args){
-        ActionHorizontal h = new ActionHorizontal("22");
-        h.startThread();
-    }
+        ActionHorizontal h = new ActionHorizontal();
+        h.moveAround("left","30");
+        }
 }
