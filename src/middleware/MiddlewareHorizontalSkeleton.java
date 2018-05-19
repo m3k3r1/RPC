@@ -16,7 +16,7 @@ public class MiddlewareHorizontalSkeleton extends SenderConnection {
 
     public MiddlewareHorizontalSkeleton(){
         new Thread(new listenerStubAndActionPerformer()).start();
-        //new Thread(new listenerRobotAndRegisterNameService()).start();
+        new Thread(new listenerRobotAndRegisterNameService()).start();
     }
 
     private class listenerStubAndActionPerformer extends ReceiverConnection implements Runnable{
@@ -50,11 +50,6 @@ public class MiddlewareHorizontalSkeleton extends SenderConnection {
     }
 
     private class listenerRobotAndRegisterNameService extends ReceiverConnection implements Runnable{
-
-        protected DatagramSocket socket;
-        protected InetAddress address;
-        protected byte[] buf = new byte[256];
-
         //Constructor
         public listenerRobotAndRegisterNameService(){
             try {
@@ -72,7 +67,7 @@ public class MiddlewareHorizontalSkeleton extends SenderConnection {
                     DatagramPacket packet = new DatagramPacket(buf, buf.length);
                     socket.receive(packet);
 
-                    String ip = new String( packet.getData(), 0, packet.getLength());
+                    String ip = new String( packet.getData());
                     nameServiceRegister(ip);
 
                 } catch (IOException e) {
@@ -86,6 +81,7 @@ public class MiddlewareHorizontalSkeleton extends SenderConnection {
     private void unmarshalling(JSONObject object) throws IOException {
         int id = (int) object.get("id");
         String move = (String) object.get("move");
+        String orientation = (String) object.get("orientation");
         int value = (int) object.get("value");
         String ip = (String) object.get("ip");
         //String ip = " ";

@@ -5,6 +5,8 @@ import java.io.Serializable;
 public class Message implements Serializable{
     private String message;
     private int slide;
+    int transactionID;
+    String orientation;
 
     public int getTransactionID() {
         return transactionID;
@@ -14,12 +16,13 @@ public class Message implements Serializable{
         this.transactionID = transactionID;
     }
 
-    int transactionID;
+
 
     public Message() {
     }
 
-    public Message(String message,int transactionID,  int slide){
+    public Message(String message,int transactionID,  int slide, String orientation){
+        this.orientation = orientation;
         this.message = message;
         this.slide = slide;
         this.transactionID = transactionID;
@@ -39,5 +42,9 @@ public class Message implements Serializable{
 
     public void setSlide(int slide) {
         this.slide = slide;
+    }
+
+    public String getOrientation() {
+        return orientation;
     }
 }

@@ -13,12 +13,8 @@ import java.net.SocketException;
 import java.util.ArrayList;
 
 public class MiddlewareHorizontalStub extends SenderConnection {
-    JSONArray jsonArray;
-    ArrayList<String> hosts;
 
     public MiddlewareHorizontalStub( ) {
-        this.jsonArray = new JSONArray();
-        hosts = new ArrayList<>();
         new Thread(new GUIListener()).start();
         new Thread(new NameServerListener()).start();
     }
@@ -85,6 +81,7 @@ public class MiddlewareHorizontalStub extends SenderConnection {
         JSONObject obj = new JSONObject();
         obj.put("id", m.getTransactionID());
         obj.put("move", "horizontal");
+        obj.put("orientation", m.getOrientation());
         obj.put("value", m.getSlide());
 
         System.out.println("[RECEIVED] " + obj);

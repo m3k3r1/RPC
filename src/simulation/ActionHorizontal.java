@@ -20,6 +20,8 @@ public class ActionHorizontal  {
     }
 
     private class ActionThread implements Runnable, ICaDSEV3RobotStatusListener, ICaDSEV3RobotFeedBackListener {
+        boolean pause = false;
+
         @Override
         public void giveFeedbackByJSonTo(JSONObject arg0) {
             // TODO Auto-generated method stub
@@ -29,7 +31,8 @@ public class ActionHorizontal  {
         public void onStatusMessage(JSONObject arg0) {
             if(arg0.get("percent").toString().equals(lim)) {
                 caller.stop_h();
-                System.exit(0);
+                pause = true;
+                this.notify();
             }
         }
         @Override
@@ -45,6 +48,10 @@ public class ActionHorizontal  {
                         caller.stop_h();
                         caller.moveRight();
                     }
+
+                    if(pause)
+                        waithere();
+
                     on = !on;
                     Delay.msDelay(5100);
                 }
@@ -63,8 +70,9 @@ public class ActionHorizontal  {
             }
         }
     }
-    public static void main(String[] args ){
-        ActionHorizontal a = new ActionHorizontal("30");
-        a.startThread();
+
+    public static void main(String[] args){
+        ActionHorizontal h = new ActionHorizontal("22");
+        h.startThread();
     }
 }

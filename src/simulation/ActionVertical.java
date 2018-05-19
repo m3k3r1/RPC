@@ -28,8 +28,10 @@ public class ActionVertical {
         @Override
         public void onStatusMessage(JSONObject arg0) {
             // horizontalValue = ;
-            if(arg0.get("percent").toString().equals(lim))
+            if(arg0.get("percent").toString().equals(lim)) {
                 caller.stop_v();
+                System.exit(0);
+            }
         }
         @Override
         public void run() {

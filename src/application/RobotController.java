@@ -5,11 +5,6 @@ import connection.SenderConnection;
 import org.cads.ev3.middleware.CaDSEV3RobotHAL;
 import simulation.*;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.DatagramPacket;
 import java.net.Inet4Address;
 import java.net.SocketException;
@@ -58,7 +53,7 @@ public class RobotController extends SenderConnection{
     }
 
     private void execute(String s){
-        ActionHorizontal h = new ActionHorizontal(s.substring(11, s.length()));
+        ActionHorizontal h = new ActionHorizontal(s.substring(18, s.length()));
         h.startThread();
     }
 
