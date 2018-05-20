@@ -1,0 +1,22 @@
+{
+  "Imports" : [
+    {"imp" : "connection.ReceiverConnection"},
+    {"imp" : "connection.SenderConnection"},
+    {"imp" : "org.json.simple.JSONObject"},
+    {"imp" : "java.io.ByteArrayInputStream"},
+    {"imp" : "java.io.IOException"},
+    {"imp" : "java.io.ObjectInputStream"},
+    {"imp" : "java.net.DatagramPacket"},
+    {"imp" : "java.net.SocketException"}
+    ],
+  "class" : "MiddlewareHorizontalSkeleton",
+  "extends" : "SenderConnection",
+  "InnerClasses" : [
+    {"name" : "listenerStubAndActionPerformer",
+    "extends" : "ReceiverConnection",
+    "implements" : "Runnable"},
+    {"name" : "listenerRobotAndRegisterNameService",
+      "extends" : "ReceiverConnection",
+      "implements" : "Runnable"}
+  ]
+}
