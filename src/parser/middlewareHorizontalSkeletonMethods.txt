@@ -1,0 +1,7 @@
+private class %s extends %s implements %s{
+
+    }
+
+    private class %s extends %s implements %s{
+
+    }
