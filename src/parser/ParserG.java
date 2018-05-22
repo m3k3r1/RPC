@@ -44,6 +44,9 @@ public class ParserG {
         JSONArray imp = (JSONArray) jsonObject.get("Imports");
         JSONArray InnerClasses = (JSONArray) jsonObject.get("InnerClasses");
         JSONArray methods = (JSONArray) jsonObject.get("Methods");
+        JSONArray nameServer = (JSONArray) jsonObject.get("NameServer");
+        JSONArray th = (JSONArray) jsonObject.get("Threads");
+        JSONArray sendMessage = (JSONArray) jsonObject.get("sendMessage");
         String aClass = (String) jsonObject.get("class");
         String aClassName = (String) jsonObject.get("className");
         String extend = (String) jsonObject.get("extends");
@@ -93,32 +96,85 @@ public class ParserG {
             methodsType.add(i1);
             methodsReturn.add(i2);
             methodsThrows.add(i4);
+        }
 
+        //connection to name server
+        ArrayList<String> nameServerList = new ArrayList<>();
+        for (Object obj : nameServer) {
+            JSONObject jsonObj = (JSONObject) obj;
+            String i1 = (String) jsonObj.get("option");
+            String i2 = (String) jsonObj.get("option1");
+            String i3 = (String) jsonObj.get("option2");
+            String i4 = (String) jsonObj.get("option3");
+            String i5 = (String) jsonObj.get("function1");
+            String i6 = (String) jsonObj.get("function2");
+            String i7 = (String) jsonObj.get("ip");
+            nameServerList.add(i1);
+            nameServerList.add(i2);
+            nameServerList.add(i3);
+            nameServerList.add(i4);
+            nameServerList.add(i5);
+            nameServerList.add(i6);
+            nameServerList.add(i7);
+        }
+        String op1 = new String();
+        String op2 = new String();
+        op1 = nameServerList.get(1) + ", " + nameServerList.get(2);
+        op2 = nameServerList.get(6) + ", " + nameServerList.get(3);
+
+        //send message
+        ArrayList<String> sendMessageList = new ArrayList<>();
+        for (Object obj : nameServer) {
+            JSONObject jsonObj = (JSONObject) obj;
+            String i1 = (String) jsonObj.get("function1");
+            String i2 = (String) jsonObj.get("ip");
+            String i3 = (String) jsonObj.get("function2");
+            String i4 = (String) jsonObj.get("option1");
+            String i5 = (String) jsonObj.get("option2");
+            sendMessageList.add(i1);
+            sendMessageList.add(i2);
+            sendMessageList.add(i3);
+            sendMessageList.add(i4);
+            sendMessageList.add(i5);
+        }
+        String op11 = new String();
+        op11 = sendMessageList.get(3) + ", " + sendMessageList.get(4);
+
+        //Init Threads
+        ArrayList<String> threadsList = new ArrayList<>();
+        for (Object obj : th) {
+            JSONObject jsonObj = (JSONObject) obj;
+            String i1 = (String) jsonObj.get("t");
+            String i2 = (String) jsonObj.get("s");
+            threadsList.add(i1);
+            threadsList.add(i2);
         }
 
         String path = "middleware";
         String classString;
-        String importsClassString;
+        String importsClassString = new String();
         String innerClassString;
 
         String importsString = readTemplate("src/parser/SkeletonImports.txt");
         String methodsString = readTemplate("src/parser/middlewareHorizontalSkeletonMethods.txt");
         String outString = readTemplate("src/parser/middlewareHorizontalSkeleton.txt");
 
-        importsClassString = String.format(
-                importsString,
-                imports.get(0),
-                imports.get(1),
-                imports.get(2),
-                imports.get(3),
-                imports.get(4),
-                imports.get(5),
-                imports.get(6),
-                imports.get(7));
+        for(int i = 0; i < imports.size(); i++)
+            importsString = importsString.replaceFirst("%s", imports.get(i));
+        importsClassString = importsString;
+
 
         innerClassString = String.format(
                 methodsString,
+                // Constructor
                 aClass,
+                threadsList.get(0),
+                name.get(0),
+                threadsList.get(1),
+                threadsList.get(0),
+                name.get(1),
+                threadsList.get(1),
+                // Class listenerStub and Action Performer
                 name.get(0),
                 exte.get(0),
                 implement.get(0),
@@ -130,16 +186,30 @@ public class ParserG {
                 methodsName.get(0),
                 parameterMaker(parameterPositionMap, 1, 2),
                 methodsThrows.get(0),
+                //sendMessageBody
                 methodsType.get(1),
                 methodsReturn.get(1),
                 methodsName.get(1),
                 parameterMaker(parameterPositionMap, 2, 4),
                 methodsThrows.get(1),
+                sendMessageList.get(0),
+                sendMessageList.get(1),
+                sendMessageList.get(2),
+                op11,
+                //NameServer body
                 methodsType.get(2),
                 methodsReturn.get(2),
                 methodsName.get(2),
                 parameterMaker(parameterPositionMap, 4, 5),
                 methodsThrows.get(2),
+                nameServerList.get(6),
+                nameServerList.get(6),
+                nameServerList.get(0),
+                op1,
+                nameServerList.get(4),
+                nameServerList.get(5),
+                op2,
+                //Main body
                 aClass,
                 aClassName,
                 aClass);

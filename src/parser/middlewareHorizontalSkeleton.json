@@ -47,5 +47,25 @@
           "name" : "ip"}
       ],
       "throws" : "IOException"}
+  ],
+  "NameServer" : [
+    {"option" : "substring",
+      "option1" : "7",
+      "option2" : "20",
+    "function1" : "doSenderConnection",
+    "function2" : "sendMessage",
+    "option3" : "7796",
+    "ip" : "ip"}
+  ],
+  "Threads" : [
+    {"t" : "Thread",
+    "s" : "start"}
+  ],
+  "sendMessage" : [
+    {"function1" : "doSenderConnection",
+      "function2" : "sendMessage",
+      "option1" : "msg",
+      "option2" : "7797",
+      "ip" : "ip"}
   ]
 }
