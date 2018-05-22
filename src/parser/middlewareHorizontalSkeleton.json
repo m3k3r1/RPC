@@ -10,6 +10,7 @@
     {"imp" : "java.net.SocketException"}
     ],
   "class" : "MiddlewareHorizontalSkeleton",
+  "className" : "skeleton",
   "extends" : "SenderConnection",
   "InnerClasses" : [
     {"name" : "listenerStubAndActionPerformer",
@@ -18,5 +19,33 @@
     {"name" : "listenerRobotAndRegisterNameService",
       "extends" : "ReceiverConnection",
       "implements" : "Runnable"}
+  ],
+  "Methods" : [
+    {"type" : "private",
+    "return" : "void",
+    "name" : "unmarshalling",
+    "parameters" : [
+      {"type" : "JSONObject",
+      "name" : "object"}
+    ],
+    "throws" : "IOException"},
+    {"type" : "private",
+      "return" : "void",
+      "name" : "sendMessage",
+      "parameters" : [
+        {"type" : "String",
+          "name" : "msg"},
+        {"type" : "String",
+          "name" : "ip"}
+      ],
+      "throws" : "IOException"},
+    {"type" : "private",
+      "return" : "void",
+      "name" : "nameServiceRegister",
+      "parameters" : [
+        {"type" : "String",
+          "name" : "ip"}
+      ],
+      "throws" : "IOException"}
   ]
 }

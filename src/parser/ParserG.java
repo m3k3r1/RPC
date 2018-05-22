@@ -6,10 +6,10 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 
 public class ParserG {
+    private int m = 1;
 
     public ParserG(){
         try {
@@ -43,7 +43,9 @@ public class ParserG {
         //Reading the String
         JSONArray imp = (JSONArray) jsonObject.get("Imports");
         JSONArray InnerClasses = (JSONArray) jsonObject.get("InnerClasses");
+        JSONArray methods = (JSONArray) jsonObject.get("Methods");
         String aClass = (String) jsonObject.get("class");
+        String aClassName = (String) jsonObject.get("className");
         String extend = (String) jsonObject.get("extends");
 
         ArrayList<String> imports = new ArrayList<>();
@@ -65,6 +67,35 @@ public class ParserG {
             exte.add(i2);
             implement.add(i3);
         }
+
+        ArrayList<String> methodsName = new ArrayList<>();
+        ArrayList<String> methodsType = new ArrayList<>();
+        ArrayList<String> methodsReturn = new ArrayList<>();
+        ArrayList<String> methodsThrows = new ArrayList<>();
+        Map<Integer, Map<String, String>> parameterPositionMap = new HashMap<>();
+
+        for (Object obj : methods){
+            JSONObject jsonObj = (JSONObject) obj;
+            JSONArray p = (JSONArray) jsonObj.get("parameters");
+            for(Object objP : p){
+                JSONObject jsonPa = (JSONObject) objP;
+                HashMap<String, String> parameterDescriptionMap = new HashMap<>();
+                parameterDescriptionMap.put("type", (String) jsonPa.get("type"));
+                parameterDescriptionMap.put("name", (String) jsonPa.get("name"));
+                parameterPositionMap.put(m++, parameterDescriptionMap);
+            }
+
+            String i1 = (String) jsonObj.get("type");
+            String i2 = (String) jsonObj.get("return");
+            String i3 = (String) jsonObj.get("name");
+            String i4 = (String) jsonObj.get("throws");
+            methodsName.add(i3);
+            methodsType.add(i1);
+            methodsReturn.add(i2);
+            methodsThrows.add(i4);
+
+        }
+
         String path = "middleware";
         String classString;
         String importsClassString;
@@ -85,7 +116,33 @@ public class ParserG {
                 imports.get(6),
                 imports.get(7));
 
-        innerClassString = String.format(methodsString, name.get(0), exte.get(0), implement.get(0), name.get(1), exte.get(1), implement.get(1));
+        innerClassString = String.format(
+                methodsString,
+                aClass,
+                name.get(0),
+                exte.get(0),
+                implement.get(0),
+                name.get(1),
+                exte.get(1),
+                implement.get(1),
+                methodsType.get(0),
+                methodsReturn.get(0),
+                methodsName.get(0),
+                parameterMaker(parameterPositionMap, 1, 2),
+                methodsThrows.get(0),
+                methodsType.get(1),
+                methodsReturn.get(1),
+                methodsName.get(1),
+                parameterMaker(parameterPositionMap, 2, 4),
+                methodsThrows.get(1),
+                methodsType.get(2),
+                methodsReturn.get(2),
+                methodsName.get(2),
+                parameterMaker(parameterPositionMap, 4, 5),
+                methodsThrows.get(2),
+                aClass,
+                aClassName,
+                aClass);
 
         classString = String.format(outString, path, importsClassString, aClass, extend, innerClassString);
         System.out.println(classString);
@@ -103,6 +160,24 @@ public class ParserG {
         in.close();
         String outString = sb.toString();
         return outString;
+    }
+
+    private String parameterMaker(Map<Integer, Map<String, String>> parameterPositionMap, int i, int mark) {
+        StringBuffer parametersBuffer;
+        parametersBuffer = new StringBuffer();
+
+        Map<String, String> parameter = parameterPositionMap.get(i);
+        while (i < mark) {
+            parametersBuffer.append(parameter.get("type"));
+            parametersBuffer.append(" ");
+            parametersBuffer.append(parameter.get("name"));
+
+            parameter = parameterPositionMap.get(++i);
+            if (i < mark) {
+                parametersBuffer.append(", ");
+            }
+        }
+        return parametersBuffer.toString();
     }
 
     public static void main(String[] args) throws IOException, ParseException {
