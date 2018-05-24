@@ -4,14 +4,67 @@ public %s(){
     }
 
     private class %s extends %s implements %s{
+        public %s(){
+            try {
+                 this.%s(%s);
+             } catch (%s) {
+                 System.err.print("%s");
+             }
+        }
 
+        %s
+        public %s %s() {
+            %s (%s) {
+                try {
+                    %s %s = new %s(%s, %s.%s);
+                    %s.%s(%s);
+
+                    %s %s = new %s(new %s(%s));
+                    %s(%s %s.%s());
+
+                    %s.%s();
+
+                } catch (%s) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     private class %s extends %s implements %s{
+        public %s(){
+            try {
+                 this.%s(%s);
+             } catch (%s) {
+                 System.err.print("%s");
+             }
+        }
 
+        %s
+        public %s %s() {
+            %s (%s) {
+                try {
+                    %s %s = new %s(%s, %s.%s);
+                    %s.%s(%s);
+
+                    %s %s = new %s(%s.%s());
+                    %s(%s);
+
+                } catch (%s) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     %s %s %s (%s) throws %s {
+        %s
+        %s
+        %s
+        %s
+
+        %s;
+        %s (%s);
 
     }
 

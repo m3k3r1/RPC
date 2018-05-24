@@ -67,5 +67,86 @@
       "option1" : "msg",
       "option2" : "7797",
       "ip" : "ip"}
+  ],
+  "unmarshalling" :[
+    {
+      "variables": [
+        {
+          "type": "String",
+          "name": "move",
+          "functionExtension": "get"
+        },
+        {
+          "type": "String",
+          "name": "orientation",
+          "functionExtension": "get"
+        },
+        {
+          "type": "int",
+          "name": "value",
+          "functionExtension": "get"
+        },
+        {
+          "type": "String",
+          "name": "ip",
+          "functionExtension": "get"
+        },
+        {
+          "type": "String",
+          "name": "msg",
+          "functionExtension": "append"
+        }
+      ]
+    }
+  ],
+  "constructorStub" : [
+    {"function1" : "doReceiverConnection",
+    "port" : "7799",
+      "exception" : "SocketException e",
+    "error" : "[ERROR] - Couldn't create socket"}
+  ],
+  "RunJSON" : [
+    {"o" : "@Override",
+      "return" : "void",
+      "name" : "run",
+      "cicle" : "while",
+      "option" : "true",
+      "var1Type" : "DatagramPacket",
+      "var1Name" : "packet",
+      "var2Type" : "ObjectInputStream",
+      "var2Name" : "iStream",
+      "var3Type" : "ByteArrayInputStream",
+      "option1" : "buf",
+      "option2" : "length",
+      "s" : "socket",
+      "function3" : "receive",
+      "function" : "unmarshalling",
+      "cast" : "(JSONObject)",
+      "function1" : "readObject",
+      "function2" : "close",
+      "excep" : "IOException | ClassNotFoundException e"}
+  ],
+  "constructorRobot" : [
+    {"function1" : "doReceiverConnection",
+      "port" : "7794",
+      "exception" : "SocketException e",
+      "error" : "[ERROR] - Couldn't create socket"}
+  ],
+  "RunRobot" : [
+    {"o" : "@Override",
+    "return" : "void",
+    "name" : "run",
+    "cicle" : "while",
+    "option" : "true",
+    "var1Type" : "DatagramPacket",
+    "var1Name" : "packet",
+    "option1" : "buf",
+    "option2" : "length",
+    "s" : "socket",
+      "function" : "receive",
+    "var2Type" : "String",
+    "var2Name" : "ip",
+    "option3" : "getData",
+    "excep" : "IOException e"}
   ]
 }
