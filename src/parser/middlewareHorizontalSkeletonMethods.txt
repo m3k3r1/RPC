@@ -1,7 +1,33 @@
-private class %s extends %s implements %s{
+public %s(){
+        new %s (new %s()).%s();
+        new %s (new %s()).%s();
+    }
+
+    private class %s extends %s implements %s{
 
     }
 
     private class %s extends %s implements %s{
 
     }
+
+    %s %s %s (%s) throws %s {
+
+    }
+
+    %s %s %s (%s) throws %s {
+        this.%s(%s);
+        this.%s(%s);
+    }
+
+    %s %s %s (%s) throws %s {
+        %s = %s.%s(%s);
+
+        this.%s();
+        this.%s(%s);
+    }
+
+    public static void main(String[] args) {
+         %s %s = new %s();
+    }
+

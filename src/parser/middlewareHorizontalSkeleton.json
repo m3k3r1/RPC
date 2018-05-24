@@ -10,6 +10,7 @@
     {"imp" : "java.net.SocketException"}
     ],
   "class" : "MiddlewareHorizontalSkeleton",
+  "className" : "skeleton",
   "extends" : "SenderConnection",
   "InnerClasses" : [
     {"name" : "listenerStubAndActionPerformer",
@@ -18,5 +19,53 @@
     {"name" : "listenerRobotAndRegisterNameService",
       "extends" : "ReceiverConnection",
       "implements" : "Runnable"}
+  ],
+  "Methods" : [
+    {"type" : "private",
+    "return" : "void",
+    "name" : "unmarshalling",
+    "parameters" : [
+      {"type" : "JSONObject",
+      "name" : "object"}
+    ],
+    "throws" : "IOException"},
+    {"type" : "private",
+      "return" : "void",
+      "name" : "sendMessage",
+      "parameters" : [
+        {"type" : "String",
+          "name" : "msg"},
+        {"type" : "String",
+          "name" : "ip"}
+      ],
+      "throws" : "IOException"},
+    {"type" : "private",
+      "return" : "void",
+      "name" : "nameServiceRegister",
+      "parameters" : [
+        {"type" : "String",
+          "name" : "ip"}
+      ],
+      "throws" : "IOException"}
+  ],
+  "NameServer" : [
+    {"option" : "substring",
+      "option1" : "7",
+      "option2" : "20",
+    "function1" : "doSenderConnection",
+    "function2" : "sendMessage",
+    "option3" : "7796",
+    "ip" : "ip"}
+  ],
+  "Threads" : [
+    {"t" : "Thread",
+    "s" : "start"}
+  ],
+  "sendMessage" : [
+    {"function1" : "doSenderConnection",
+      "function2" : "sendMessage",
+      "option1" : "msg",
+      "option2" : "7797",
+      "ip" : "ip"}
   ]
 }
