@@ -68,14 +68,14 @@ public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGrippe
     public int closeGripper(int transactionID) throws Exception {
         System.out.println("Close.... TID: " + transactionID);
         this.doSenderConnection();
-        sendMessage(new Message("close",transactionID, 100, "null"),5598);
+        sendMessage(new Message("close", transactionID, 100, "null"),5598);
         return 0;
     }
     @Override
     public int openGripper(int transactionID) throws Exception {
         System.out.println("open.... TID: " + transactionID);
         this.doSenderConnection();
-        sendMessage(new Message("open",transactionID, 100, "null"),5598);
+        sendMessage(new Message("open", transactionID, 100, "null"),5598);
         return 0;
     }
     @Override
@@ -88,9 +88,9 @@ public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGrippe
         this.doSenderConnection();
 
         if (percent > orientation_h)
-            sendMessage(new Message("horizontal",transactionID,percent, "left"),7798);
+            sendMessage(new Message("horizontal", transactionID, percent, "left"),7798);
         else
-            sendMessage(new Message("horizontal",transactionID,percent, "right"),7798);
+            sendMessage(new Message("horizontal", transactionID, percent, "right"),7798);
 
         orientation_h = percent;
         return 0;

@@ -14,7 +14,9 @@ public class ParserG {
 
     public ParserG(){
         try {
-            createHorizontalSkeleton(readFromJSONFile("src/parser/middlewareHorizontalSkeleton.json"));
+            createSkeleton(readFromJSONFile("src/parser/middlewareHorizontalSkeleton.json"));
+            createSkeleton(readFromJSONFile("src/parser/middlewareVerticalSkeleton.json"));
+            createSkeleton(readFromJSONFile("src/parser/middlewareGrabberSkeleton.json"));
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ParseException e) {
@@ -40,7 +42,7 @@ public class ParserG {
         return jsonObject;
     }
 
-    private void createHorizontalSkeleton(JSONObject jsonObject) throws IOException {
+    private void createSkeleton(JSONObject jsonObject) throws IOException {
         //Reading the String
         JSONArray imp = (JSONArray) jsonObject.get("Imports");
         JSONArray InnerClasses = (JSONArray) jsonObject.get("InnerClasses");
@@ -290,8 +292,8 @@ public class ParserG {
         String innerClassString;
 
         String importsString = readTemplate("src/parser/SkeletonImports.txt");
-        String methodsString = readTemplate("src/parser/middlewareHorizontalSkeletonMethods.txt");
-        String outString = readTemplate("src/parser/middlewareHorizontalSkeleton.txt");
+        String methodsString = readTemplate("src/parser/middlewareSkeletonMethods.txt");
+        String outString = readTemplate("src/parser/middlewareSkeleton.txt");
 
         for(int i = 0; i < imports.size(); i++)
             importsString = importsString.replaceFirst("%s", imports.get(i));
@@ -345,10 +347,6 @@ public class ParserG {
                 JSONThreadVariables.get(3),
                 JSONThreadFunction.get(2),
                 JSONThreadExcep,
-
-
-
-
                 // Class listenerRobot and register name server
                 name.get(1),
                 exte.get(1),
@@ -395,7 +393,6 @@ public class ParserG {
                 unmarshalledMessage(bodyPositionMap, "msg"),
                 methodsName.get(1),
                 arguments(),
-
                 //sendMessageBody
                 methodsType.get(1),
                 methodsReturn.get(1),
@@ -427,6 +424,8 @@ public class ParserG {
         classString = String.format(outString, path, importsClassString, aClass, extend, innerClassString);
         System.out.println(classString);
         writeClass(aClass, classString);
+        m = 1;
+        unmar.clear();
     }
 
     private String arguments() {
@@ -434,8 +433,6 @@ public class ParserG {
     }
 
     private String readTemplate(String path) throws FileNotFoundException {
-        //Reading the template class
-        //Scanner in = new Scanner(new FileReader("src/parser/middlewareHorizontalSkeleton.txt"));
         Scanner in = new Scanner(new FileReader(path));
         StringBuilder sb = new StringBuilder();
         while (in.hasNext()) {

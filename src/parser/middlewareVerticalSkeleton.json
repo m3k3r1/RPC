@@ -8,27 +8,27 @@
     {"imp" : "java.io.ObjectInputStream"},
     {"imp" : "java.net.DatagramPacket"},
     {"imp" : "java.net.SocketException"}
-    ],
-  "class" : "MiddlewareHorizontalSkeleton",
-  "className" : "horizontal",
+  ],
+  "class" : "MiddlewareVerticalSkeleton",
+  "className" : "vertical",
   "extends" : "SenderConnection",
   "InnerClasses" : [
     {"name" : "listenerStubAndActionPerformer",
-    "extends" : "ReceiverConnection",
-    "implements" : "Runnable"},
+      "extends" : "ReceiverConnection",
+      "implements" : "Runnable"},
     {"name" : "listenerRobotAndRegisterNameService",
       "extends" : "ReceiverConnection",
       "implements" : "Runnable"}
   ],
   "Methods" : [
     {"type" : "private",
-    "return" : "void",
-    "name" : "unmarshalling",
-    "parameters" : [
-      {"type" : "JSONObject",
-      "name" : "object"}
-    ],
-    "throws" : "IOException"},
+      "return" : "void",
+      "name" : "unmarshalling",
+      "parameters" : [
+        {"type" : "JSONObject",
+          "name" : "object"}
+      ],
+      "throws" : "IOException"},
     {"type" : "private",
       "return" : "void",
       "name" : "sendMessage",
@@ -52,20 +52,20 @@
     {"option" : "substring",
       "option1" : "7",
       "option2" : "20",
-    "function1" : "doSenderConnection",
-    "function2" : "sendMessage",
-    "option3" : "7796",
-    "ip" : "ip"}
+      "function1" : "doSenderConnection",
+      "function2" : "sendMessage",
+      "option3" : "6696",
+      "ip" : "ip"}
   ],
   "Threads" : [
     {"t" : "Thread",
-    "s" : "start"}
+      "s" : "start"}
   ],
   "sendMessage" : [
     {"function1" : "doSenderConnection",
       "function2" : "sendMessage",
       "option1" : "msg",
-      "option2" : "7797",
+      "option2" : "6697",
       "ip" : "ip"}
   ],
   "unmarshalling" :[
@@ -101,9 +101,9 @@
   ],
   "constructorStub" : [
     {"function1" : "doReceiverConnection",
-    "port" : "7799",
+      "port" : "6699",
       "exception" : "SocketException e",
-    "error" : "[ERROR] - Couldn't create socket"}
+      "error" : "[ERROR] - Couldn't create socket"}
   ],
   "RunJSON" : [
     {"o" : "@Override",
@@ -128,25 +128,25 @@
   ],
   "constructorRobot" : [
     {"function1" : "doReceiverConnection",
-      "port" : "7794",
+      "port" : "6694",
       "exception" : "SocketException e",
       "error" : "[ERROR] - Couldn't create socket"}
   ],
   "RunRobot" : [
     {"o" : "@Override",
-    "return" : "void",
-    "name" : "run",
-    "cicle" : "while",
-    "option" : "true",
-    "var1Type" : "DatagramPacket",
-    "var1Name" : "packet",
-    "option1" : "buf",
-    "option2" : "length",
-    "s" : "socket",
+      "return" : "void",
+      "name" : "run",
+      "cicle" : "while",
+      "option" : "true",
+      "var1Type" : "DatagramPacket",
+      "var1Name" : "packet",
+      "option1" : "buf",
+      "option2" : "length",
+      "s" : "socket",
       "function" : "receive",
-    "var2Type" : "String",
-    "var2Name" : "ip",
-    "option3" : "getData",
-    "excep" : "IOException e"}
+      "var2Type" : "String",
+      "var2Name" : "ip",
+      "option3" : "getData",
+      "excep" : "IOException e"}
   ]
 }

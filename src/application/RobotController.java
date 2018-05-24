@@ -111,7 +111,13 @@ public class RobotController extends SenderConnection{
                     String received= new String(packet.getData(), 0, packet.getLength());
                     received = received.substring(7,received.length());
                     System.out.println(received);
-                    execute("null","100",received);
+                    String[] parts = received.split(",");
+                    String move = parts[0];
+                    String percent = parts[1];
+                    String orientation = parts[2];
+
+                    execute(move,percent,orientation);
+                    //execute("null","100",received);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
