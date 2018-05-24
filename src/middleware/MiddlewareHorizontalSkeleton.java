@@ -37,10 +37,8 @@ public class MiddlewareHorizontalSkeleton extends SenderConnection {
                 try {
                     DatagramPacket packet = new DatagramPacket(buf, buf.length);
                     socket.receive(packet);
-
                     ObjectInputStream iStream = new ObjectInputStream(new ByteArrayInputStream(buf));
                     unmarshalling((JSONObject) iStream.readObject());
-
                     iStream.close();
                 } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();

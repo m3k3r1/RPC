@@ -9,27 +9,21 @@ import org.json.simple.JSONObject;
 
 public class ActionHorizontal  {
     protected static CaDSEV3RobotHAL caller;
-    String lim;
-    String orientation;
     ActionThread a;
 
-    public ActionHorizontal(String  lim, String orientation) {
-        this.lim = lim;
-        this.orientation = orientation;
-         a = new ActionThread();
-    }
     public ActionHorizontal() {
          a = new ActionThread();
     }
 
-    public void moveAround(String orientation, String percent){
-        this.lim = percent;
-        this.orientation = orientation;
-        a.moveAround(orientation,percent);
+    public void moveAround(String move, String orientation, String percent){
+        a.moveAround(move, orientation,percent);
     }
 
     private class ActionThread implements Runnable, ICaDSEV3RobotStatusListener, ICaDSEV3RobotFeedBackListener {
         boolean pause = false;
+        String lim;
+        String orientation;
+        String move;
 
         public ActionThread() {
             caller = CaDSEV3RobotHAL.createInstance(CaDSEV3RobotType.SIMULATION, this, this);
@@ -42,26 +36,65 @@ public class ActionHorizontal  {
         }
         @Override
         public void onStatusMessage(JSONObject arg0) {
-            if(arg0.get("percent").toString().equals(lim)) {
-                caller.stop_h();
-                pause = true;
-                this.notify();
+            if(arg0 != null){
+                if(arg0.get("percent").toString().equals(lim)) {
+                    if(move.equals("horizontal")) {
+                        caller.stop_h();
+                        caller.stop_v();
+                    }else{
+                        caller.stop_h();
+                        caller.stop_v();
+
+                    }
+                    pause = true;
+                }
             }
         }
 
-        public void moveAround(String orientation, String percent){
+        public void moveAround(String move, String orientation, String percent){
+            this.move = move;
+            this.orientation = orientation;
+            this.lim = percent;
             new Thread(this).start();
         }
 
         @Override
         public void run() {
-            if(orientation.equals("left")) {
-                caller.stop_h();
-                caller.moveLeft();
-            }else {
-                caller.stop_h();
-                caller.moveRight();
+
+            switch (orientation) {
+                case "open":
+                    caller.stop_v();
+                    caller.stop_h();
+                    caller.doOpen();
+                    break;
+                case "close":
+                    caller.stop_v();
+                    caller.stop_h();
+                    caller.doClose();
+                    break;
+                case "left":
+                    caller.stop_v();
+                    caller.stop_h();
+                    caller.moveLeft();
+                    break;
+                case "right":
+                    caller.stop_v();
+                    caller.stop_h();
+                    caller.moveRight();
+                    break;
+                case "up":
+                    caller.stop_v();
+                    caller.stop_h();
+                    caller.moveUp();
+                    break;
+                case "down":
+                    caller.stop_v();
+                    caller.stop_h();
+                    caller.moveDown();
+                    break;
             }
+
+
 
             Delay.msDelay(2000);
         }
@@ -77,6 +110,5 @@ public class ActionHorizontal  {
 
     public static void main(String[] args){
         ActionHorizontal h = new ActionHorizontal();
-        h.moveAround("left","30");
         }
 }

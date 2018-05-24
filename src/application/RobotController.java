@@ -11,7 +11,8 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 public class RobotController extends SenderConnection{
-    protected static CaDSEV3RobotHAL caller;
+    protected static  ActionHorizontal h;
+
 
     public RobotController() {
         try {
@@ -25,6 +26,9 @@ public class RobotController extends SenderConnection{
             e.printStackTrace();
         }
         new Thread(new HorizontalSkeletonListener()).start();
+        new Thread(new VerticalSkeletonListener()).start();
+        new Thread(new GrabberSkeletonListener()).start();
+        h = new ActionHorizontal();
     }
 
     private class  HorizontalSkeletonListener extends ReceiverConnection {
@@ -43,8 +47,71 @@ public class RobotController extends SenderConnection{
                     DatagramPacket packet = new DatagramPacket(buf, buf.length);
                     socket.receive(packet);
                     String received= new String(packet.getData(), 0, packet.getLength());
+                    received = received.substring(7,received.length());
                     System.out.println(received);
-                    execute(received);
+
+                    String[] parts = received.split(",");
+                    String move = parts[0];
+                    String percent = parts[1];
+                    String orientation = parts[2];
+
+                    execute(move,percent,orientation);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    private class  VerticalSkeletonListener extends ReceiverConnection {
+        public VerticalSkeletonListener() {
+            try {
+                this.doReceiverConnection(6697);
+            } catch (SocketException e) {
+                System.err.print("[ERROR] - Couldn't create socket");
+            }
+        }
+
+        @Override
+        public void run(){
+            while (true){
+                try {
+                    DatagramPacket packet = new DatagramPacket(buf, buf.length);
+                    socket.receive(packet);
+                    String received= new String(packet.getData(), 0, packet.getLength());
+                    received = received.substring(7,received.length());
+                    System.out.println(received);
+
+                    String[] parts = received.split(",");
+                    String move = parts[0];
+                    String percent = parts[1];
+                    String orientation = parts[2];
+
+                    execute(move,percent,orientation);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    private class  GrabberSkeletonListener extends ReceiverConnection {
+        public GrabberSkeletonListener() {
+            try {
+                this.doReceiverConnection(5597);
+            } catch (SocketException e) {
+                System.err.print("[ERROR] - Couldn't create socket");
+            }
+        }
+
+        @Override
+        public void run(){
+            while (true){
+                try {
+                    DatagramPacket packet = new DatagramPacket(buf, buf.length);
+                    socket.receive(packet);
+                    String received= new String(packet.getData(), 0, packet.getLength());
+                    received = received.substring(7,received.length());
+                    System.out.println(received);
+                    execute("null","100",received);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -52,9 +119,9 @@ public class RobotController extends SenderConnection{
         }
     }
 
-    private void execute(String s){
-        ActionHorizontal h = new ActionHorizontal(s.substring(18, s.length()));
-        h.startThread();
+    private void execute(String move, String percent ,String orientation ){
+        System.out.println(move + " " + percent + " " + orientation);
+            h.moveAround(move,orientation,percent);
     }
 
     public static void main(String[] args){

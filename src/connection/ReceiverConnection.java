@@ -9,7 +9,7 @@ import java.net.UnknownHostException;
 
 public class ReceiverConnection implements IConnection, Runnable {
     protected DatagramSocket socket;
-    protected byte[] buf = new byte[256];
+    protected byte[] buf = new byte[4096];
 
     @Override
     public void doSenderConnection() throws SocketException, UnknownHostException {
