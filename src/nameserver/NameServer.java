@@ -17,14 +17,13 @@ public class NameServer extends SenderConnection{
 
     public NameServer() {
         this.routingTable = new HashMap<>();
-        new Thread(new SkeletonListener()).start();
-        new Thread(new StubListener()).start();
+        new Thread(new BrokerListener()).start();
     }
 
-    private class SkeletonListener extends ReceiverConnection implements Runnable{
-        public SkeletonListener() {
+    private class BrokerListener extends ReceiverConnection implements Runnable{
+        public BrokerListener() {
             try {
-                this.doReceiverConnection(7796);
+                this.doReceiverConnection(7791);
             } catch (SocketException e) {
                 e.printStackTrace();
             }
@@ -37,28 +36,6 @@ public class NameServer extends SenderConnection{
                     socket.receive(packet);
                     String received= new String(packet.getData(), 0, packet.getLength());
                     addService(received);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-    private class StubListener extends ReceiverConnection implements Runnable{
-        public StubListener() {
-            try {
-                this.doReceiverConnection(7795);
-            } catch (SocketException e) {
-                e.printStackTrace();
-            }
-        }
-        @Override
-        public void run(){
-            while (true){
-                try {
-                    DatagramPacket packet = new DatagramPacket(buf, buf.length);
-                    socket.receive(packet);
-                    String received= new String(packet.getData(), 0, packet.getLength());
-                    sendIP(getHostname(received));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -96,7 +73,7 @@ public class NameServer extends SenderConnection{
     private void sendIP(String ip){
         try {
             this.doSenderConnection();
-            this.sendMessage(ip,7792);
+            this.sendMessage(ip,7790);
         } catch (SocketException e) {
             e.printStackTrace();
         } catch (UnknownHostException e) {
