@@ -3,6 +3,8 @@ package middleware;
 import connection.ReceiverConnection;
 import connection.SenderConnection;
 
+import java.net.SocketException;
+
 public class Broker extends SenderConnection
 {
     public Broker() {
@@ -16,30 +18,107 @@ public class Broker extends SenderConnection
     }
 
     private class HorizontalStubListener extends ReceiverConnection {
+        public HorizontalStubListener() {
+            try {
+                this.doReceiverConnection();
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
+        }
 
+        @Override
+        public void run(){
+
+        }
     }
     private class VerticalStubListener extends ReceiverConnection {
+        public VerticalStubListener() {
+            try {
+                this.doReceiverConnection();
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
+        }
 
+        @Override
+        public void run(){
+
+        }
     }
     private class GrabberStubListener extends ReceiverConnection {
+        public GrabberStubListener() {
+            try {
+                this.doReceiverConnection();
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
+        }
 
+        @Override
+        public void run(){
+
+        }
     }
     private class HorizontalSkeletonListener extends ReceiverConnection {
+        public HorizontalSkeletonListener() {
+            try {
+                this.doReceiverConnection();
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
+        }
 
+        @Override
+        public void run(){
+
+        }
     }
     private class VerticalSkeletonListener extends ReceiverConnection {
+        public VerticalSkeletonListener() {
+            try {
+                this.doReceiverConnection();
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
+        }
 
+        @Override
+        public void run(){
+
+        }
     }
     private class GrabberSkeletonListener extends ReceiverConnection {
+        public GrabberSkeletonListener() {
+            try {
+                this.doReceiverConnection();
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
+        }
 
+        @Override
+        public void run(){
+
+        }
     }
     private class NameServerLisntener extends ReceiverConnection {
+        public NameServerLisntener() {
+            try {
+                this.doReceiverConnection();
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
+        }
 
+        @Override
+        public void run(){
+
+        }
     }
 
     public void saveMessageToFile(){ }
     public void checkFile(){}
-    
+
     public static void main(String[] args){
         new Broker();
     }
