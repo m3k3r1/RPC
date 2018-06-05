@@ -20,7 +20,7 @@ public class Broker extends SenderConnection
     private class HorizontalStubListener extends ReceiverConnection {
         public HorizontalStubListener() {
             try {
-                this.doReceiverConnection();
+                this.doReceiverConnection(7799);
             } catch (SocketException e) {
                 e.printStackTrace();
             }
@@ -34,7 +34,7 @@ public class Broker extends SenderConnection
     private class VerticalStubListener extends ReceiverConnection {
         public VerticalStubListener() {
             try {
-                this.doReceiverConnection();
+                this.doReceiverConnection(6699);
             } catch (SocketException e) {
                 e.printStackTrace();
             }
@@ -48,7 +48,7 @@ public class Broker extends SenderConnection
     private class GrabberStubListener extends ReceiverConnection {
         public GrabberStubListener() {
             try {
-                this.doReceiverConnection();
+                this.doReceiverConnection(5599);
             } catch (SocketException e) {
                 e.printStackTrace();
             }
@@ -62,7 +62,7 @@ public class Broker extends SenderConnection
     private class HorizontalSkeletonListener extends ReceiverConnection {
         public HorizontalSkeletonListener() {
             try {
-                this.doReceiverConnection();
+                this.doReceiverConnection(7788);
             } catch (SocketException e) {
                 e.printStackTrace();
             }
@@ -76,7 +76,7 @@ public class Broker extends SenderConnection
     private class VerticalSkeletonListener extends ReceiverConnection {
         public VerticalSkeletonListener() {
             try {
-                this.doReceiverConnection();
+                this.doReceiverConnection(6688);
             } catch (SocketException e) {
                 e.printStackTrace();
             }
@@ -90,7 +90,7 @@ public class Broker extends SenderConnection
     private class GrabberSkeletonListener extends ReceiverConnection {
         public GrabberSkeletonListener() {
             try {
-                this.doReceiverConnection();
+                this.doReceiverConnection(5588);
             } catch (SocketException e) {
                 e.printStackTrace();
             }
@@ -104,7 +104,7 @@ public class Broker extends SenderConnection
     private class NameServerLisntener extends ReceiverConnection {
         public NameServerLisntener() {
             try {
-                this.doReceiverConnection();
+                this.doReceiverConnection(7790);
             } catch (SocketException e) {
                 e.printStackTrace();
             }

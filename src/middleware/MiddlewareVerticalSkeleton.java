@@ -20,7 +20,7 @@ public class MiddlewareVerticalSkeleton extends SenderConnection{
     private class listenerStubAndActionPerformer extends ReceiverConnection implements Runnable{
         public listenerStubAndActionPerformer(){
             try {
-                 this.doReceiverConnection(6699);
+                 this.doReceiverConnection(6689);
              } catch (SocketException e) {
                  System.err.print("[ERROR] - Couldn't create socket");
              }
@@ -91,7 +91,7 @@ public class MiddlewareVerticalSkeleton extends SenderConnection{
         ip = ip.substring(7, 20);
 
         this.doSenderConnection();
-        this.sendMessage(ip, 6696);
+        this.sendMessage(ip, 6688);
     }
 
     public static void main(String[] args) {
