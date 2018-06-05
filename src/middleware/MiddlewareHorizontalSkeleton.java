@@ -13,14 +13,14 @@ import java.net.SocketException;
 public class MiddlewareHorizontalSkeleton extends SenderConnection{
 
     public MiddlewareHorizontalSkeleton(){
-        new Thread (new listenerStubAndActionPerformer()).start();
+        new Thread (new listenerBrokerAndActionPerformer()).start();
         new Thread (new listenerRobotAndRegisterNameService()).start();
     }
 
-    private class listenerStubAndActionPerformer extends ReceiverConnection implements Runnable{
-        public listenerStubAndActionPerformer(){
+    private class listenerBrokerAndActionPerformer extends ReceiverConnection implements Runnable{
+        public listenerBrokerAndActionPerformer(){
             try {
-                 this.doReceiverConnection(7799);
+                 this.doReceiverConnection(7789);
              } catch (SocketException e) {
                  System.err.print("[ERROR] - Couldn't create socket");
              }
@@ -91,7 +91,7 @@ public class MiddlewareHorizontalSkeleton extends SenderConnection{
         ip = ip.substring(7, 20);
 
         this.doSenderConnection();
-        this.sendMessage(ip, 7796);
+        this.sendMessage(ip, 7788);
     }
 
     public static void main(String[] args) {
