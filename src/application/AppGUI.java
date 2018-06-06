@@ -18,8 +18,10 @@ public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGrippe
     String robot;
     int orientation_h = 0;
     int orientation_v = 0;
+    String namehost;
 
-     public AppGUI() {
+     public AppGUI(String namehost) {
+         this.namehost = namehost;
          gui = new CaDSRobotGUISwing(this,this,this,this,this);
         new Thread(new HorizontalStubListener()).start();
     }
@@ -62,20 +64,21 @@ public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGrippe
     }
     @Override
     public void update(String s) {
-
+        this.robot = s;
+        System.out.println(s);
     }
     @Override
     public int closeGripper(int transactionID) throws Exception {
         System.out.println("Close.... TID: " + transactionID);
-        this.doSenderConnection();
-        sendMessage(new Message("close", transactionID, 100, "null"),5598);
+        this.doSenderConnection(namehost);
+        sendMessage(new Message(robot,"close",transactionID, 100, "null"),5598);
         return 0;
     }
     @Override
     public int openGripper(int transactionID) throws Exception {
         System.out.println("open.... TID: " + transactionID);
-        this.doSenderConnection();
-        sendMessage(new Message("open", transactionID, 100, "null"),5598);
+        this.doSenderConnection(namehost);
+        sendMessage(new Message(robot,"open",transactionID, 100, "null"),5598);
         return 0;
     }
     @Override
@@ -85,12 +88,11 @@ public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGrippe
     @Override
     public int moveHorizontalToPercent(int transactionID, int percent) throws Exception {
         System.out.println("Call to move vertical -  TID: " + transactionID + " degree " + percent);
-        this.doSenderConnection();
-
+        this.doSenderConnection(namehost);
         if (percent > orientation_h)
-            sendMessage(new Message("horizontal", transactionID, percent, "left"),7798);
+            sendMessage(new Message(robot,"horizontal",transactionID,percent, "left"),7798);
         else
-            sendMessage(new Message("horizontal", transactionID, percent, "right"),7798);
+            sendMessage(new Message(robot,"horizontal",transactionID,percent, "right"),7798);
 
         orientation_h = percent;
         return 0;
@@ -98,12 +100,12 @@ public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGrippe
     @Override
     public int moveVerticalToPercent(int transactionID, int percent) throws Exception {
         System.out.println("Call to move vertical -  TID: " + transactionID + " degree " + percent);
-        this.doSenderConnection();
+        this.doSenderConnection(namehost);
 
         if (percent > orientation_v)
-            sendMessage(new Message("vertical",transactionID,percent, "up"), 6698);
+            sendMessage(new Message(robot,"vertical",transactionID,percent, "up"), 6698);
         else
-            sendMessage(new Message("vertical",transactionID,percent, "down"), 6698);
+            sendMessage(new Message(robot,"vertical",transactionID,percent, "down"), 6698);
 
         orientation_v = percent;
         return 0;
@@ -127,6 +129,6 @@ public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGrippe
     }
 
     public static void main(String[] args){
-         AppGUI g = new AppGUI();
+         AppGUI g = new AppGUI("localhost");
     }
 }

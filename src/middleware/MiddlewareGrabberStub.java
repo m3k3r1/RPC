@@ -46,10 +46,8 @@ public class MiddlewareGrabberStub extends SenderConnection{
     private JSONObject marshelling(Message m){
         JSONObject obj = new JSONObject();
         obj.put("id", m.getTransactionID());
+        obj.put("name", m.getRobot());
         obj.put("move", m.getMessage());
-        obj.put("orientation", m.getMessage());
-        obj.put("value", m.getSlide());
-        obj.put("ip", "localhost");
 
         System.out.println("[RECEIVED] " + obj);
         return obj;

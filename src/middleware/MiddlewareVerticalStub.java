@@ -46,6 +46,7 @@ public class MiddlewareVerticalStub  extends SenderConnection {
     private JSONObject marshelling(Message m){
         JSONObject obj = new JSONObject();
         obj.put("id", m.getTransactionID());
+        obj.put("name", m.getRobot());
         obj.put("move", "vertical");
         obj.put("orientation", m.getOrientation());
         obj.put("value", m.getSlide());
