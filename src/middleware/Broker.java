@@ -9,9 +9,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
 import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Broker extends SenderConnection
 {
+    private List<JSONObject> temp = new ArrayList<>();
+
     public Broker() {
         new Thread(new HorizontalSkeletonListener()).start();
         new Thread(new HorizontalStubListener()).start();
@@ -20,6 +24,7 @@ public class Broker extends SenderConnection
         new Thread(new GrabberSkeletonListener()).start();
         new Thread(new GrabberStubListener()).start();
         new Thread(new NameServerListener()).start();
+        new Thread(new getHostnameListener()).start();
     }
 
     private class HorizontalStubListener extends ReceiverConnection {
@@ -39,10 +44,11 @@ public class Broker extends SenderConnection
 
                 ObjectInputStream iStream = new ObjectInputStream(new ByteArrayInputStream(buf));
                 //TODO save to file and send message
-
-
+                nameServiceGetName(getIPFromNameServer((JSONObject) iStream.readObject()));
                 iStream.close();
 
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -184,6 +190,31 @@ public class Broker extends SenderConnection
         }
     }
 
+    private class getHostnameListener extends ReceiverConnection {
+        public getHostnameListener() {
+            try {
+                this.doReceiverConnection(7795);
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void run(){
+            while (true){
+                try {
+                    DatagramPacket packet = new DatagramPacket(buf, buf.length);
+                    socket.receive(packet);
+                    String received= new String(packet.getData(), 0, packet.getLength());
+                    sendJson(addIPToJSON(received));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+
     public void saveMessageToFile(){ }
     public void checkFile(){}
 
@@ -192,6 +223,35 @@ public class Broker extends SenderConnection
 
         this.doSenderConnection();
         this.sendMessage(ip, port);
+    }
+
+    private void nameServiceGetName(String name) throws IOException {
+        this.doSenderConnection();
+        this.sendMessage(name, 7796);
+
+    }
+
+    private String getIPFromNameServer(JSONObject obj){
+        temp.add(obj);
+        String name = (String) obj.get("name");
+        System.out.println("Broker --- name " + name);
+        return name;
+    }
+
+    private JSONObject addIPToJSON(String ip){
+        JSONObject obj = temp.get(0);
+        obj.put("ip", ip);
+        temp.remove(0);
+        return obj;
+    }
+
+    private void sendJson(JSONObject obj){
+        try {
+            this.doSenderConnection();
+            this.sendMessage(obj,7788);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args){
