@@ -42,8 +42,7 @@ public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGrippe
                      DatagramPacket packet = new DatagramPacket(buf, buf.length);
                      socket.receive(packet);
                      String received= new String(packet.getData(), 0, packet.getLength());
-                     received = received.substring(7,received.length());
-                    addService(received);
+                     addService(received);
                  } catch (IOException e) {
                      e.printStackTrace();
                  }
@@ -51,8 +50,33 @@ public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGrippe
          }
      }
 
+    private class VerticalStubListener extends ReceiverConnection implements  Runnable {
+        public VerticalStubListener() {
+            try {
+                this.doReceiverConnection(6693);
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    DatagramPacket packet = new DatagramPacket(buf, buf.length);
+                    socket.receive(packet);
+                    String received= new String(packet.getData(), 0, packet.getLength());
+                    addService(received);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
      synchronized void addService(String s){
-         gui.addService(s);
+         String[] part1 = s.split("\\^");
+         gui.addService(part1[1]);
      }
 
     @Override

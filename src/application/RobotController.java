@@ -16,19 +16,16 @@ public class RobotController extends SenderConnection{
 
     public RobotController() {
         try {
-            this.doSenderConnection();
-            this.sendMessage((String)Inet4Address.getLocalHost().getHostAddress(),7794);
-        } catch (SocketException e) {
-            e.printStackTrace();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
+            String ip = "^" + (String) Inet4Address.getLocalHost().getHostAddress() + "^";
+            this.sendMessage(ip, 7794);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Deu merda");
         }
+
         new Thread(new HorizontalSkeletonListener()).start();
         new Thread(new VerticalSkeletonListener()).start();
         new Thread(new GrabberSkeletonListener()).start();
-        h = new ActionHorizontal();
+        //h = new ActionHorizontal();
     }
 
     private class  HorizontalSkeletonListener extends ReceiverConnection {
@@ -130,7 +127,7 @@ public class RobotController extends SenderConnection{
             h.moveAround(move,orientation,percent);
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws IOException {
         RobotController robot = new RobotController();
     }
 }

@@ -68,51 +68,46 @@ public class NameServer extends SenderConnection{
     }
 
     private void addService(String hostLocation){
-        int count = 0;
-        for(int j = 0; j < routingTable.size(); j++){
-            if(routingTable.get(i).equals(hostLocation))
-                count++;
-        }
-        if(count != 0) {
-            routingTable.put(hostLocation, "Robot" + i);
-            System.out.print("[ADDED] " + hostLocation + " as " + routingTable.get(hostLocation));
+        String[] part1 = hostLocation.split("\\^");
+        if(routingTable.containsKey(part1[1])){
+
+            routingTable.put(part1[1], "Robot"+i);
+            i++;
+            System.out.print("[ADDED] " + part1[1] + " as " + routingTable.get(part1[1]));
+            String send = "^" + routingTable.get(part1[1]) + "^";
             try {
                 this.doSenderConnection();
-                this.sendMessage(routingTable.get(hostLocation), 7790);
-
+                this.sendMessage(send, 7790);
             } catch (SocketException e) {
-                e.printStackTrace();
+                    e.printStackTrace();
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+        } else System.out.println("Key already exists!");
+
     }
 
     private void removeService(String hostLocation){
         routingTable.remove(hostLocation);
         i--;
     }
+
     private String getHostname(String name){
+
+        String[] part = name.split("\\^");
         for (Map.Entry<String, String> entry : routingTable.entrySet()) {
-            if (Objects.equals(name, entry.getValue())) {
-                return entry.getKey();
+            if (Objects.equals(part[1], entry.getValue())) {
+                return "^" + entry.getKey() + "^";
             }
         }
         return null;
     }
-    private void sendIP(String ip){
-        try {
-            this.doSenderConnection();
-            this.sendMessage(ip,7795);
-        } catch (SocketException e) {
-            e.printStackTrace();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+    private void sendIP(String ip) throws IOException {
+        this.doSenderConnection();
+        this.sendMessage(ip,7795);
     }
 
     public static void main(String[] args){ NameServer dns = new NameServer(); }

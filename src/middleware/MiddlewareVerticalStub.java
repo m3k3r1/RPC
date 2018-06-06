@@ -14,6 +14,7 @@ import java.net.SocketException;
 public class MiddlewareVerticalStub  extends SenderConnection {
     public MiddlewareVerticalStub() {
         new Thread(new GUIListener()).start();
+        new Thread(new BrokerListener()).start();
     }
 
     private class GUIListener extends ReceiverConnection implements Runnable{
@@ -34,12 +35,45 @@ public class MiddlewareVerticalStub  extends SenderConnection {
 
                     ObjectInputStream iStream = new ObjectInputStream(new ByteArrayInputStream(buf));
 
-                    sendMarshelledMessage(marshelling((Message) iStream.readObject()),6699 );
+                    sendMarshelledMessage(marshelling((Message) iStream.readObject()));
                     iStream.close();
                 } catch (IOException | ClassNotFoundException | ClassCastException e) {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    private class BrokerListener extends ReceiverConnection implements Runnable{
+        public BrokerListener (){
+            try {
+                this.doReceiverConnection(6692);
+            } catch (SocketException e) {
+                System.err.print("[ERROR] - Couldn't create socket");
+            }
+        }
+        @Override
+        public void run(){
+            while (true) {
+                try {
+                    DatagramPacket packet = new DatagramPacket(buf, buf.length);
+                    socket.receive(packet);
+                    String received= new String(packet.getData(), 0, packet.getLength());
+                    System.out.print("New Host - " +received.substring(7,received.length()));
+                    sendHosts(received.substring(7,received.length()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void sendHosts(String robot){
+        try {
+            this.doSenderConnection();
+            this.sendMessage(robot,7793);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -54,10 +88,11 @@ public class MiddlewareVerticalStub  extends SenderConnection {
         System.out.println("[RECEIVED] " + obj);
         return obj;
     }
-    private void sendMarshelledMessage(JSONObject obj , int port){
+
+    private void sendMarshelledMessage(JSONObject obj){
         try {
             this.doSenderConnection();
-            this.sendMessage(obj,port);
+            this.sendMessage(obj, 6699);
         } catch (IOException e) {
             e.printStackTrace();
         }

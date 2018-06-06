@@ -77,6 +77,7 @@ public class MiddlewareHorizontalStub extends SenderConnection {
             e.printStackTrace();
         }
     }
+
     private JSONObject marshelling(Message m){
         JSONObject obj = new JSONObject();
         obj.put("name", m.getRobot());
