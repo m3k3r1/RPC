@@ -4,6 +4,7 @@ import connection.ReceiverConnection;
 import connection.SenderConnection;
 import message.Message;
 import org.json.simple.JSONObject;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;

@@ -2,87 +2,106 @@
   "Imports" : [
     {"imp" : "connection.ReceiverConnection"},
     {"imp" : "connection.SenderConnection"},
-    {"imp" : "message.Message"},
-    {"imp" : "org.json.simple.JSONArray"},
     {"imp" : "org.json.simple.JSONObject"},
     {"imp" : "java.io.ByteArrayInputStream"},
     {"imp" : "java.io.IOException"},
     {"imp" : "java.io.ObjectInputStream"},
-    {"imp" : "java.net.DatagramPacket"}
+    {"imp" : "java.net.DatagramPacket"},
     {"imp" : "java.net.SocketException"}
-    {"imp" : "java.util.ArrayList"}
     ],
-  "class" : "MiddlewareHorizontalStub",
+  "class" : "MiddlewareHorizontalSkeleton",
   "className" : "horizontal",
   "extends" : "SenderConnection",
   "InnerClasses" : [
-    {"name" : "GUIListener",
+    {"name" : "listenerStubAndActionPerformer",
     "extends" : "ReceiverConnection",
     "implements" : "Runnable"},
-    {"name" : "NameServerListener",
+    {"name" : "listenerRobotAndRegisterNameService",
       "extends" : "ReceiverConnection",
       "implements" : "Runnable"}
   ],
   "Methods" : [
     {"type" : "private",
     "return" : "void",
-    "name" : "sendHosts",
+    "name" : "unmarshalling",
     "parameters" : [
-      {"type" : "String",
-      "name" : "robot"}
+      {"type" : "JSONObject",
+      "name" : "object"}
     ],
-    }
-    {"type" : "private",
-      "return" : "JSONObject",
-      "name" : "marshelling",
-      "parameters" : [
-        {"type" : "Message",
-          "name" : "m"}
-      ],
-    }
+    "throws" : "IOException"},
     {"type" : "private",
       "return" : "void",
-      "name" : "sendMarshelledMessage",
+      "name" : "sendMessage",
       "parameters" : [
-        {"type" : "JSONObject",
-          "name" : "obj"}
+        {"type" : "String",
+          "name" : "msg"},
+        {"type" : "String",
+          "name" : "ip"}
       ],
-    }
+      "throws" : "IOException"},
+    {"type" : "private",
+      "return" : "void",
+      "name" : "nameServiceRegister",
+      "parameters" : [
+        {"type" : "String",
+          "name" : "ip"}
+      ],
+      "throws" : "IOException"}
   ],
-  "sendHosts" : [
-    {
+  "NameServer" : [
+    {"option" : "substring",
+      "option1" : "7",
+      "option2" : "20",
     "function1" : "doSenderConnection",
     "function2" : "sendMessage",
-    "option3" : "7793",
-    "robot" : "robot"}
+    "option3" : "7796",
+    "ip" : "ip"}
   ],
   "Threads" : [
     {"t" : "Thread",
     "s" : "start"}
   ],
-  "sendMarshelledMessage" : [
+  "sendMessage" : [
     {"function1" : "doSenderConnection",
       "function2" : "sendMessage",
-      "option1" : "obj",
-      "option2" : "7799",
-    }
+      "option1" : "msg",
+      "option2" : "7797",
+      "ip" : "ip"}
   ],
-  "marshalling" :[
+  "unmarshalling" :[
     {
-          "type": "JSONObject",
-          "name": "obj",
-          "functionExtension": "get",
-          "put": "put",
-          
-          "m": "m",
-          "getT": "getTransactionID",
-          "getO": "getOrientation",
-          "getS": "getSlide",
+      "variables": [
+        {
+          "type": "String",
+          "name": "move",
+          "functionExtension": "get"
+        },
+        {
+          "type": "String",
+          "name": "orientation",
+          "functionExtension": "get"
+        },
+        {
+          "type": "int",
+          "name": "value",
+          "functionExtension": "get"
+        },
+        {
+          "type": "String",
+          "name": "ip",
+          "functionExtension": "get"
+        },
+        {
+          "type": "String",
+          "name": "msg",
+          "functionExtension": "append"
+        }
+      ]
     }
   ],
-  "GUIListener" : [
+  "constructorStub" : [
     {"function1" : "doReceiverConnection",
-    "port" : "7798",
+    "port" : "7799",
       "exception" : "SocketException e",
     "error" : "[ERROR] - Couldn't create socket"}
   ],
@@ -101,16 +120,15 @@
       "option2" : "length",
       "s" : "socket",
       "function3" : "receive",
-      "function" : "sendMarshelledMessage",
-      "cast" : "(marshelling)",
-      "cast1" : "(Message)",
+      "function" : "unmarshalling",
+      "cast" : "(JSONObject)",
       "function1" : "readObject",
       "function2" : "close",
-      "excep" : "IOException | ClassNotFoundException e | ClassCastException e"}
+      "excep" : "IOException | ClassNotFoundException e"}
   ],
-  "NameServerListener" : [
+  "constructorRobot" : [
     {"function1" : "doReceiverConnection",
-      "port" : "7792",
+      "port" : "7794",
       "exception" : "SocketException e",
       "error" : "[ERROR] - Couldn't create socket"}
   ],
@@ -126,11 +144,9 @@
     "option2" : "length",
     "s" : "socket",
       "function" : "receive",
-      "function2": "substring"
     "var2Type" : "String",
-    "var2Name" : "received",
+    "var2Name" : "ip",
     "option3" : "getData",
-    "option4" : "getLength",
     "excep" : "IOException e"}
   ]
 }

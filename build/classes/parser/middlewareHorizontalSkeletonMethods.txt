@@ -83,3 +83,4 @@ public %s(){
     public static void main(String[] args) {
          %s %s = new %s();
     }
+

@@ -12,10 +12,9 @@ import java.net.DatagramPacket;
 import java.net.SocketException;
 import java.util.ArrayList;
 
+public class MiddlewareHorizontalStub extends SenderConnection {
 
-public class MiddlewareHorizontalStub extends SenderConnection{
-
-        public MiddlewareHorizontalStub( ) {
+    public MiddlewareHorizontalStub( ) {
         new Thread(new GUIListener()).start();
         new Thread(new NameServerListener()).start();
     }
@@ -38,9 +37,9 @@ public class MiddlewareHorizontalStub extends SenderConnection{
 
                     ObjectInputStream iStream = new ObjectInputStream(new ByteArrayInputStream(buf));
 
-                    sendMarshelledMessage((marshelling)(((Message)) iStream.readObject()));
+                    sendMarshelledMessage(marshelling((Message) iStream.readObject()));
                     iStream.close();
-                } catch (IOException | ClassNotFoundException e | ClassCastException e) {
+                } catch (IOException | ClassNotFoundException | ClassCastException e) {
                     e.printStackTrace();
                 }
             }
@@ -78,7 +77,7 @@ public class MiddlewareHorizontalStub extends SenderConnection{
             e.printStackTrace();
         }
     }
-   private marshelling JSONObject(Message m){
+    private JSONObject marshelling(Message m){
         JSONObject obj = new JSONObject();
         obj.put("id", m.getTransactionID());
         obj.put("move", "horizontal");
@@ -98,8 +97,6 @@ public class MiddlewareHorizontalStub extends SenderConnection{
     }
 
     public static void main(String[] args){
-        MiddlewareHorizontalStub horizontal = new MiddlewareHorizontalStub();
+        MiddlewareHorizontalStub stub = new MiddlewareHorizontalStub();
     }
-
-
 }
