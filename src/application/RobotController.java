@@ -2,47 +2,45 @@ package application;
 
 import connection.ReceiverConnection;
 import connection.SenderConnection;
-import org.cads.ev3.middleware.CaDSEV3RobotHAL;
 import simulation.*;
 import java.io.IOException;
 import java.net.*;
+import java.util.Enumeration;
 
 public class RobotController extends SenderConnection{
     protected static  ActionHorizontal h;
+    String skeletonIP;
+    String ip;
 
-
-    public RobotController() {
+    public RobotController(String hostname) {
+        skeletonIP = hostname;
 
         try {
-            this.doSenderConnection();
-            String ip = (String) Inet4Address.getLocalHost().getHostAddress();
-            ip = "^" + ip + "^";
-            System.out.println("ip " + ip);
+            this.doSenderConnection(skeletonIP);
+            ip = "^" + getIp()  + "^";
             this.sendMessage(ip, 7794);
-        } catch (IOException e) {
+        } catch (IOException o) {
             System.out.println("Deu merda");
         }
         try {
-            this.doSenderConnection();
-            String ip = (String) Inet4Address.getLocalHost().getHostAddress();
-            ip = "^" + ip + "^";
+            this.doSenderConnection(skeletonIP);
+            ip = "^" + getIp() + "^";
             this.sendMessage(ip, 6694);
-        } catch (IOException e) {
+        } catch (IOException o) {
             System.out.println("Deu merda");
         }
         try {
-            this.doSenderConnection();
-            String ip = (String) Inet4Address.getLocalHost().getHostAddress();
-            ip = "^" + ip + "^";
+            this.doSenderConnection(skeletonIP);
+            ip = "^" + getIp() + "^";
             this.sendMessage(ip, 5594);
-        } catch (IOException e) {
+        } catch (IOException o) {
             System.out.println("Deu merda");
         }
 
         new Thread(new HorizontalSkeletonListener()).start();
         new Thread(new VerticalSkeletonListener()).start();
         new Thread(new GrabberSkeletonListener()).start();
-        //h = new ActionHorizontal();
+        h = new ActionHorizontal();
     }
 
     private class  HorizontalSkeletonListener extends ReceiverConnection {
@@ -75,6 +73,42 @@ public class RobotController extends SenderConnection{
                 }
             }
         }
+    }
+    private String getIp(){
+        Enumeration e = null;
+        boolean save = false;
+        String ip = null;
+
+        try {
+            e = NetworkInterface.getNetworkInterfaces();
+        } catch (SocketException e1) {
+            e1.printStackTrace();
+        }
+        while(e.hasMoreElements())
+        {
+            NetworkInterface n = (NetworkInterface) e.nextElement();
+            Enumeration ee = n.getInetAddresses();
+            while (ee.hasMoreElements())
+            {
+                InetAddress i = (InetAddress) ee.nextElement();
+
+                if(save){
+                    ip = i.getHostAddress();
+                    save = false;
+                }
+
+                String[] part;
+                part = i.getHostAddress().split("%");
+
+                if(part.length > 1){
+                    if(part[1].equals("wlan0")){
+                        save = true;
+                    }
+                }
+            }
+        }
+
+        return ip;
     }
     private class  VerticalSkeletonListener extends ReceiverConnection {
         public VerticalSkeletonListener() {
@@ -145,6 +179,6 @@ public class RobotController extends SenderConnection{
     }
 
     public static void main(String[] args) throws IOException {
-        RobotController robot = new RobotController();
+        RobotController robot = new RobotController("localhost");
     }
 }
