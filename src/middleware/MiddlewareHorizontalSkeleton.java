@@ -79,6 +79,8 @@ public class MiddlewareHorizontalSkeleton extends SenderConnection{
         String ip = (String) object.get("ip");
 
         String msg = new StringBuilder(move).append(",").append(value).append(",").append(orientation).append(",").toString();
+        System.out.println(msg);
+        System.out.println(ip);
         sendMessage (msg, ip);
 
     }

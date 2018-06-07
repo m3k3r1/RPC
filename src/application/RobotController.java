@@ -5,10 +5,7 @@ import connection.SenderConnection;
 import org.cads.ev3.middleware.CaDSEV3RobotHAL;
 import simulation.*;
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.Inet4Address;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+import java.net.*;
 
 public class RobotController extends SenderConnection{
     protected static  ActionHorizontal h;
@@ -20,6 +17,7 @@ public class RobotController extends SenderConnection{
             this.doSenderConnection();
             String ip = (String) Inet4Address.getLocalHost().getHostAddress();
             ip = "^" + ip + "^";
+            System.out.println("ip " + ip);
             this.sendMessage(ip, 7794);
         } catch (IOException e) {
             System.out.println("Deu merda");
@@ -44,7 +42,7 @@ public class RobotController extends SenderConnection{
         new Thread(new HorizontalSkeletonListener()).start();
         new Thread(new VerticalSkeletonListener()).start();
         new Thread(new GrabberSkeletonListener()).start();
-        h = new ActionHorizontal();
+        //h = new ActionHorizontal();
     }
 
     private class  HorizontalSkeletonListener extends ReceiverConnection {
