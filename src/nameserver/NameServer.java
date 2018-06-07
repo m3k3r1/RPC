@@ -84,6 +84,13 @@ public class NameServer extends SenderConnection{
                 e.printStackTrace();
             }
         } else if(routingTable.containsKey(part1[1])) {
+            String send = "^" + routingTable.get(part1[1]) + "^";
+            try {
+                this.doSenderConnection();
+                this.sendMessage(send, 7790);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
                 System.out.println("Key already exists!");
             } else {
                 routingTable.put(part1[1], "Robot"+i);

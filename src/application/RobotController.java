@@ -14,33 +14,35 @@ public class RobotController extends SenderConnection{
 
     public RobotController(String hostname) {
         skeletonIP = hostname;
-
-        try {
-            this.doSenderConnection(skeletonIP);
-            ip = "^" + getIp()  + "^";
-            this.sendMessage(ip, 7794);
-        } catch (IOException o) {
-            System.out.println("Deu merda");
-        }
-        try {
-            this.doSenderConnection(skeletonIP);
-            ip = "^" + getIp() + "^";
-            this.sendMessage(ip, 6694);
-        } catch (IOException o) {
-            System.out.println("Deu merda");
-        }
-        try {
-            this.doSenderConnection(skeletonIP);
-            ip = "^" + getIp() + "^";
-            this.sendMessage(ip, 5594);
-        } catch (IOException o) {
-            System.out.println("Deu merda");
-        }
-
         new Thread(new HorizontalSkeletonListener()).start();
         new Thread(new VerticalSkeletonListener()).start();
         new Thread(new GrabberSkeletonListener()).start();
         h = new ActionHorizontal();
+
+        while(true){
+            try {
+                this.doSenderConnection(skeletonIP);
+                ip = "^" + getIp()  + "^";
+                System.out.println(ip);
+                this.sendMessage(ip, 7794);
+            } catch (IOException o) {
+                System.out.println("Deu merda");
+            }
+            try {
+                this.doSenderConnection(skeletonIP);
+                ip = "^" + getIp() + "^";
+                this.sendMessage(ip, 6694);
+            } catch (IOException o) {
+                System.out.println("Deu merda");
+            }
+            try {
+                this.doSenderConnection(skeletonIP);
+                ip = "^" + getIp() + "^";
+                this.sendMessage(ip, 5594);
+            } catch (IOException o) {
+                System.out.println("Deu merda");
+            }
+        }
     }
 
     private class  HorizontalSkeletonListener extends ReceiverConnection {
@@ -77,7 +79,7 @@ public class RobotController extends SenderConnection{
     private String getIp(){
         Enumeration e = null;
         boolean save = false;
-        String ip = null;
+        String ip = "localhost";
 
         try {
             e = NetworkInterface.getNetworkInterfaces();
@@ -107,9 +109,9 @@ public class RobotController extends SenderConnection{
                 }
             }
         }
-
         return ip;
     }
+
     private class  VerticalSkeletonListener extends ReceiverConnection {
         public VerticalSkeletonListener() {
             try {
@@ -141,6 +143,7 @@ public class RobotController extends SenderConnection{
             }
         }
     }
+
     private class  GrabberSkeletonListener extends ReceiverConnection {
         public GrabberSkeletonListener() {
             try {

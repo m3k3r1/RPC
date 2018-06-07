@@ -14,6 +14,7 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Handler;
 
 public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGripper, IIDLCaDSEV3RMIMoveHorizontal, IIDLCaDSEV3RMIMoveVertical, IIDLCaDSEV3RMIUltraSonic, ICaDSRMIConsumer {
     CaDSRobotGUISwing gui;
@@ -30,6 +31,8 @@ public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGrippe
         new Thread(new VerticalStubListener()).start();
         new Thread(new GrabberStubListener()).start();
     }
+
+
 
     private class HorizontalStubListener extends ReceiverConnection implements  Runnable {
          public HorizontalStubListener() {
@@ -157,7 +160,10 @@ public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGrippe
             sendMessage(new Message(robot,"horizontal",transactionID,percent, "left"),7798);
         else
             sendMessage(new Message(robot,"horizontal",transactionID,percent, "right"),7798);
-
+        for(int j = 0; i < robots.size(); j++){
+            gui.removeService(robots.get(j));
+        }
+        robots.clear();
         orientation_h = percent;
         return 0;
     }
