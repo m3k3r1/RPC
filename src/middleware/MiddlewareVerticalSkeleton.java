@@ -20,7 +20,7 @@ public class MiddlewareVerticalSkeleton extends SenderConnection{
     private class listenerStubAndActionPerformer extends ReceiverConnection implements Runnable{
         public listenerStubAndActionPerformer(){
             try {
-                 this.doReceiverConnection(6699);
+                 this.doReceiverConnection(6689);
              } catch (SocketException e) {
                  System.err.print("[ERROR] - Couldn't create socket");
              }
@@ -61,7 +61,7 @@ public class MiddlewareVerticalSkeleton extends SenderConnection{
                     DatagramPacket packet = new DatagramPacket(buf, buf.length);
                     socket.receive(packet);
 
-                    String ip = new String(packet.getData());
+                    String ip = new String(packet.getData(), packet.getOffset(), packet.getLength());
                     nameServiceRegister(ip);
 
                 } catch (IOException e) {
@@ -88,10 +88,9 @@ public class MiddlewareVerticalSkeleton extends SenderConnection{
     }
 
     private void nameServiceRegister (String ip) throws IOException {
-        ip = ip.substring(7, 20);
-
+        System.out.println("Skeleton ip " + ip);
         this.doSenderConnection();
-        this.sendMessage(ip, 6696);
+        this.sendMessage(ip, 6688);
     }
 
     public static void main(String[] args) {

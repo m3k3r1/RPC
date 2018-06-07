@@ -8,19 +8,20 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
 import java.net.SocketException;
+import java.nio.charset.StandardCharsets;
 
 
 public class MiddlewareHorizontalSkeleton extends SenderConnection{
 
     public MiddlewareHorizontalSkeleton(){
-        new Thread (new listenerStubAndActionPerformer()).start();
+        new Thread (new listenerBrokerAndActionPerformer()).start();
         new Thread (new listenerRobotAndRegisterNameService()).start();
     }
 
-    private class listenerStubAndActionPerformer extends ReceiverConnection implements Runnable{
-        public listenerStubAndActionPerformer(){
+    private class listenerBrokerAndActionPerformer extends ReceiverConnection implements Runnable{
+        public listenerBrokerAndActionPerformer(){
             try {
-                 this.doReceiverConnection(7799);
+                 this.doReceiverConnection(7789);
              } catch (SocketException e) {
                  System.err.print("[ERROR] - Couldn't create socket");
              }
@@ -61,7 +62,7 @@ public class MiddlewareHorizontalSkeleton extends SenderConnection{
                     DatagramPacket packet = new DatagramPacket(buf, buf.length);
                     socket.receive(packet);
 
-                    String ip = new String(packet.getData());
+                    String ip = new String(packet.getData(), packet.getOffset(), packet.getLength());
                     nameServiceRegister(ip);
 
                 } catch (IOException e) {
@@ -88,10 +89,10 @@ public class MiddlewareHorizontalSkeleton extends SenderConnection{
     }
 
     private void nameServiceRegister (String ip) throws IOException {
-        ip = ip.substring(7, 20);
-
+        //System.out.println(ip);
+        System.out.println("Skeleton - " + ip);
         this.doSenderConnection();
-        this.sendMessage(ip, 7796);
+        this.sendMessage(ip, 7788);
     }
 
     public static void main(String[] args) {

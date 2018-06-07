@@ -16,7 +16,7 @@ public class MiddlewareHorizontalStub extends SenderConnection {
 
     public MiddlewareHorizontalStub( ) {
         new Thread(new GUIListener()).start();
-        new Thread(new NameServerListener()).start();
+        new Thread(new BrokerListener()).start();
     }
 
     private class GUIListener extends ReceiverConnection implements Runnable{
@@ -45,8 +45,8 @@ public class MiddlewareHorizontalStub extends SenderConnection {
             }
         }
     }
-    private class NameServerListener extends ReceiverConnection implements Runnable{
-        public NameServerListener (){
+    private class BrokerListener extends ReceiverConnection implements Runnable{
+        public BrokerListener (){
             try {
                 this.doReceiverConnection(7792);
             } catch (SocketException e) {
@@ -77,8 +77,10 @@ public class MiddlewareHorizontalStub extends SenderConnection {
             e.printStackTrace();
         }
     }
+
     private JSONObject marshelling(Message m){
         JSONObject obj = new JSONObject();
+        obj.put("name", m.getRobot());
         obj.put("id", m.getTransactionID());
         obj.put("move", "horizontal");
         obj.put("orientation", m.getOrientation());

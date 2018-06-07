@@ -20,7 +20,7 @@ public class MiddlewareGrabberSkeleton extends SenderConnection{
     private class listenerStubAndActionPerformer extends ReceiverConnection implements Runnable{
         public listenerStubAndActionPerformer(){
             try {
-                 this.doReceiverConnection(5599);
+                 this.doReceiverConnection(5589);
              } catch (SocketException e) {
                  System.err.print("[ERROR] - Couldn't create socket");
              }
@@ -88,10 +88,9 @@ public class MiddlewareGrabberSkeleton extends SenderConnection{
     }
 
     private void nameServiceRegister (String ip) throws IOException {
-        ip = ip.substring(7, 20);
-
+        System.out.println(ip);
         this.doSenderConnection();
-        this.sendMessage(ip, 5596);
+        this.sendMessage(ip, 5588);
     }
 
     public static void main(String[] args) {

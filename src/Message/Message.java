@@ -8,6 +8,16 @@ public class Message implements Serializable{
     int transactionID;
     String orientation;
 
+    public String getRobot() {
+        return robot;
+    }
+
+    public void setRobot(String robot) {
+        this.robot = robot;
+    }
+
+    String robot;
+
     public int getTransactionID() {
         return transactionID;
     }
@@ -21,7 +31,8 @@ public class Message implements Serializable{
     public Message() {
     }
 
-    public Message(String message,int transactionID,  int slide, String orientation){
+    public Message(String robot, String message,int transactionID,  int slide, String orientation){
+        this.robot = robot;
         this.orientation = orientation;
         this.message = message;
         this.slide = slide;

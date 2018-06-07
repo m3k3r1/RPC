@@ -12,16 +12,23 @@ import org.cads.ev3.rmi.generated.cadSRMIInterface.IIDLCaDSEV3RMIMoveVertical;
 import org.cads.ev3.rmi.generated.cadSRMIInterface.IIDLCaDSEV3RMIUltraSonic;
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGripper, IIDLCaDSEV3RMIMoveHorizontal, IIDLCaDSEV3RMIMoveVertical, IIDLCaDSEV3RMIUltraSonic, ICaDSRMIConsumer {
     CaDSRobotGUISwing gui;
     String robot;
     int orientation_h = 0;
     int orientation_v = 0;
+    String namehost;
+    List<String> robots = new ArrayList<>();
 
-     public AppGUI() {
+     public AppGUI(String namehost) {
+         this.namehost = namehost;
          gui = new CaDSRobotGUISwing(this,this,this,this,this);
         new Thread(new HorizontalStubListener()).start();
+        new Thread(new VerticalStubListener()).start();
+        new Thread(new GrabberStubListener()).start();
     }
 
     private class HorizontalStubListener extends ReceiverConnection implements  Runnable {
@@ -40,8 +47,7 @@ public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGrippe
                      DatagramPacket packet = new DatagramPacket(buf, buf.length);
                      socket.receive(packet);
                      String received= new String(packet.getData(), 0, packet.getLength());
-                     received = received.substring(7,received.length());
-                    addService(received);
+                     addService(received);
                  } catch (IOException e) {
                      e.printStackTrace();
                  }
@@ -49,8 +55,68 @@ public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGrippe
          }
      }
 
+    private class VerticalStubListener extends ReceiverConnection implements  Runnable {
+        public VerticalStubListener() {
+            try {
+                this.doReceiverConnection(6693);
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    DatagramPacket packet = new DatagramPacket(buf, buf.length);
+                    socket.receive(packet);
+                    String received= new String(packet.getData(), 0, packet.getLength());
+                    addService(received);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private class GrabberStubListener extends ReceiverConnection implements  Runnable {
+        public GrabberStubListener() {
+            try {
+                this.doReceiverConnection(5593);
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    DatagramPacket packet = new DatagramPacket(buf, buf.length);
+                    socket.receive(packet);
+                    String received= new String(packet.getData(), 0, packet.getLength());
+                    addService(received);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
      synchronized void addService(String s){
-         gui.addService(s);
+         String[] part1 = s.split("\\^");
+         if(robots.size() == 0) {
+             robots.add(part1[1]);
+             gui.addService(part1[1]);
+         }
+         else {
+             if (robots.contains(part1[1])) {
+                 System.out.println("Robot already registered");
+             } else {
+                 robots.add(part1[1]);
+                 gui.addService(part1[1]);
+             }
+         }
      }
 
     @Override
@@ -62,20 +128,21 @@ public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGrippe
     }
     @Override
     public void update(String s) {
-
+        this.robot = s;
+        System.out.println(s);
     }
     @Override
     public int closeGripper(int transactionID) throws Exception {
         System.out.println("Close.... TID: " + transactionID);
-        this.doSenderConnection();
-        sendMessage(new Message("close", transactionID, 100, "null"),5598);
+        this.doSenderConnection(namehost);
+        sendMessage(new Message(robot,"close",transactionID, 100, "close"),5598);
         return 0;
     }
     @Override
     public int openGripper(int transactionID) throws Exception {
         System.out.println("open.... TID: " + transactionID);
-        this.doSenderConnection();
-        sendMessage(new Message("open", transactionID, 100, "null"),5598);
+        this.doSenderConnection(namehost);
+        sendMessage(new Message(robot,"open",transactionID, 100, "open"),5598);
         return 0;
     }
     @Override
@@ -85,12 +152,11 @@ public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGrippe
     @Override
     public int moveHorizontalToPercent(int transactionID, int percent) throws Exception {
         System.out.println("Call to move vertical -  TID: " + transactionID + " degree " + percent);
-        this.doSenderConnection();
-
+        this.doSenderConnection(namehost);
         if (percent > orientation_h)
-            sendMessage(new Message("horizontal", transactionID, percent, "left"),7798);
+            sendMessage(new Message(robot,"horizontal",transactionID,percent, "left"),7798);
         else
-            sendMessage(new Message("horizontal", transactionID, percent, "right"),7798);
+            sendMessage(new Message(robot,"horizontal",transactionID,percent, "right"),7798);
 
         orientation_h = percent;
         return 0;
@@ -98,12 +164,12 @@ public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGrippe
     @Override
     public int moveVerticalToPercent(int transactionID, int percent) throws Exception {
         System.out.println("Call to move vertical -  TID: " + transactionID + " degree " + percent);
-        this.doSenderConnection();
+        this.doSenderConnection(namehost);
 
         if (percent > orientation_v)
-            sendMessage(new Message("vertical",transactionID,percent, "up"), 6698);
+            sendMessage(new Message(robot,"vertical",transactionID,percent, "up"), 6698);
         else
-            sendMessage(new Message("vertical",transactionID,percent, "down"), 6698);
+            sendMessage(new Message(robot,"vertical",transactionID,percent, "down"), 6698);
 
         orientation_v = percent;
         return 0;
@@ -127,6 +193,6 @@ public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGrippe
     }
 
     public static void main(String[] args){
-         AppGUI g = new AppGUI();
+         AppGUI g = new AppGUI("localhost");
     }
 }
