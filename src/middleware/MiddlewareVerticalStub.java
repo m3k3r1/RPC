@@ -71,7 +71,7 @@ public class MiddlewareVerticalStub  extends SenderConnection {
     private void sendHosts(String robot){
         try {
             this.doSenderConnection();
-            this.sendMessage(robot,7793);
+            this.sendMessage(robot,6693);
         } catch (IOException e) {
             e.printStackTrace();
         }

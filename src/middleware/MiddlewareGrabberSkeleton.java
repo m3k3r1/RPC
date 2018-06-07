@@ -88,8 +88,7 @@ public class MiddlewareGrabberSkeleton extends SenderConnection{
     }
 
     private void nameServiceRegister (String ip) throws IOException {
-        ip = ip.substring(7, 20);
-
+        System.out.println(ip);
         this.doSenderConnection();
         this.sendMessage(ip, 5588);
     }

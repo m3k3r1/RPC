@@ -15,9 +15,28 @@ public class RobotController extends SenderConnection{
 
 
     public RobotController() {
+
         try {
-            String ip = "^" + (String) Inet4Address.getLocalHost().getHostAddress() + "^";
+            this.doSenderConnection();
+            String ip = (String) Inet4Address.getLocalHost().getHostAddress();
+            ip = "^" + ip + "^";
             this.sendMessage(ip, 7794);
+        } catch (IOException e) {
+            System.out.println("Deu merda");
+        }
+        try {
+            this.doSenderConnection();
+            String ip = (String) Inet4Address.getLocalHost().getHostAddress();
+            ip = "^" + ip + "^";
+            this.sendMessage(ip, 6694);
+        } catch (IOException e) {
+            System.out.println("Deu merda");
+        }
+        try {
+            this.doSenderConnection();
+            String ip = (String) Inet4Address.getLocalHost().getHostAddress();
+            ip = "^" + ip + "^";
+            this.sendMessage(ip, 5594);
         } catch (IOException e) {
             System.out.println("Deu merda");
         }
@@ -25,7 +44,7 @@ public class RobotController extends SenderConnection{
         new Thread(new HorizontalSkeletonListener()).start();
         new Thread(new VerticalSkeletonListener()).start();
         new Thread(new GrabberSkeletonListener()).start();
-        //h = new ActionHorizontal();
+        h = new ActionHorizontal();
     }
 
     private class  HorizontalSkeletonListener extends ReceiverConnection {

@@ -14,6 +14,7 @@ import java.net.SocketException;
 public class MiddlewareGrabberStub extends SenderConnection{
     public MiddlewareGrabberStub() {
         new Thread(new GUIListener()).start();
+        new Thread(new BrokerListener()).start();
     }
 
     private class GUIListener extends ReceiverConnection implements Runnable{
@@ -43,15 +44,51 @@ public class MiddlewareGrabberStub extends SenderConnection{
         }
     }
 
+    private class BrokerListener extends ReceiverConnection implements Runnable{
+        public BrokerListener (){
+            try {
+                this.doReceiverConnection(5592);
+            } catch (SocketException e) {
+                System.err.print("[ERROR] - Couldn't create socket");
+            }
+        }
+        @Override
+        public void run(){
+            while (true) {
+                try {
+                    DatagramPacket packet = new DatagramPacket(buf, buf.length);
+                    socket.receive(packet);
+                    String received= new String(packet.getData(), 0, packet.getLength());
+                    System.out.print("New Host - " +received.substring(7,received.length()));
+                    sendHosts(received.substring(7,received.length()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void sendHosts(String robot){
+        try {
+            this.doSenderConnection();
+            this.sendMessage(robot,5593);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private JSONObject marshelling(Message m){
         JSONObject obj = new JSONObject();
         obj.put("id", m.getTransactionID());
         obj.put("name", m.getRobot());
         obj.put("move", m.getMessage());
+        obj.put("orientation", m.getOrientation());
+        obj.put("value", m.getSlide());
 
         System.out.println("[RECEIVED] " + obj);
         return obj;
     }
+
     private void sendMarshelledMessage(JSONObject obj){
         try {
             this.doSenderConnection();

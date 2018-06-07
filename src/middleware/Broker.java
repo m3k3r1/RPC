@@ -19,8 +19,11 @@ public class Broker extends SenderConnection
 
     public Broker() {
         new Thread(new HorizontalSkeletonListener()).start();
+        new Thread(new VerticalSkeletonListener()).start();
+        new Thread(new GrabberSkeletonListener()).start();
         new Thread(new HorizontalStubListener()).start();
         new Thread(new VerticalStubListener()).start();
+        new Thread(new GrabberStubListener()).start();
         new Thread(new NameServerListener()).start();
         new Thread(new getHostnameListener()).start();
     }
@@ -81,6 +84,34 @@ public class Broker extends SenderConnection
         }
     }
 
+    private class GrabberStubListener extends ReceiverConnection {
+        public GrabberStubListener() {
+            try {
+                this.doReceiverConnection(5599);
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void run(){
+            while (true) {
+                try {
+                    DatagramPacket packet = new DatagramPacket(buf, buf.length);
+                    socket.receive(packet);
+
+                    ObjectInputStream iStream = new ObjectInputStream(new ByteArrayInputStream(buf));
+                    nameServiceGetName(getIPFromNameServer((JSONObject) iStream.readObject()));
+
+                    iStream.close();
+
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     private class HorizontalSkeletonListener extends ReceiverConnection {
         public HorizontalSkeletonListener() {
             try {
@@ -111,6 +142,32 @@ public class Broker extends SenderConnection
         public VerticalSkeletonListener() {
             try {
                 this.doReceiverConnection(6688);
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void run(){
+            while (true) {
+                try {
+                    DatagramPacket packet = new DatagramPacket(buf, buf.length);
+                    socket.receive(packet);
+
+                    String received = new String(packet.getData(), packet.getOffset(), packet.getLength());
+                    nameServiceRegister(received);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private class GrabberSkeletonListener extends ReceiverConnection {
+        public GrabberSkeletonListener() {
+            try {
+                this.doReceiverConnection(5588);
             } catch (SocketException e) {
                 e.printStackTrace();
             }
@@ -230,6 +287,13 @@ public class Broker extends SenderConnection
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else if(type.equals("open") || type.equals("close")){
+            try {
+                this.doSenderConnection();
+                this.sendMessage(obj, 5589);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -238,43 +302,19 @@ public class Broker extends SenderConnection
             this.doSenderConnection();
             this.sendMessage(name,7792);
         } catch (IOException e) {
-            try {
-                this.doSenderConnection();
-                this.sendMessage(name, 6692);
-            } catch (SocketException e1) {
-                try {
-                    this.doSenderConnection();
-                    this.sendMessage(name, 5592);
-                } catch (SocketException e2) {
-                    e2.printStackTrace();
-                } catch (UnknownHostException e2) {
-                    e2.printStackTrace();
-                } catch (IOException e2) {
-                    e2.printStackTrace();
-                }
-            } catch (UnknownHostException e1) {
-                try {
-                    this.doSenderConnection();
-                    this.sendMessage(name, 5592);
-                } catch (SocketException e2) {
-                    e2.printStackTrace();
-                } catch (UnknownHostException e2) {
-                    e2.printStackTrace();
-                } catch (IOException e2) {
-                    e2.printStackTrace();
-                }
-            } catch (IOException e1) {
-                try {
-                    this.doSenderConnection();
-                    this.sendMessage(name, 5592);
-                } catch (SocketException e2) {
-                    e2.printStackTrace();
-                } catch (UnknownHostException e2) {
-                    e2.printStackTrace();
-                } catch (IOException e2) {
-                    e2.printStackTrace();
-                }
-            }
+            e.printStackTrace();
+        }
+        try {
+            this.doSenderConnection();
+            this.sendMessage(name,6692);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            this.doSenderConnection();
+            this.sendMessage(name,5592);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

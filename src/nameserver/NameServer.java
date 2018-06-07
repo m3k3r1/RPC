@@ -68,25 +68,36 @@ public class NameServer extends SenderConnection{
     }
 
     private void addService(String hostLocation){
+        System.out.println(hostLocation);
         String[] part1 = hostLocation.split("\\^");
-        if(routingTable.containsKey(part1[1])){
-
+        System.out.println(routingTable.size());
+        if(routingTable.size() == 0){
+            System.out.println(part1[1]);
             routingTable.put(part1[1], "Robot"+i);
             i++;
-            System.out.print("[ADDED] " + part1[1] + " as " + routingTable.get(part1[1]));
+            System.out.println("[ADDED] " + part1[1] + " as " + routingTable.get(part1[1]));
             String send = "^" + routingTable.get(part1[1]) + "^";
             try {
                 this.doSenderConnection();
                 this.sendMessage(send, 7790);
-            } catch (SocketException e) {
-                    e.printStackTrace();
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else System.out.println("Key already exists!");
-
+        } else if(routingTable.containsKey(part1[1])) {
+                System.out.println("Key already exists!");
+            } else {
+                routingTable.put(part1[1], "Robot"+i);
+                i++;
+                System.out.print("[ADDED] " + part1[1] + " as " + routingTable.get(part1[1]));
+                String send = "^" + routingTable.get(part1[1]) + "^";
+                try {
+                    this.doSenderConnection();
+                    this.sendMessage(send, 7790);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        System.out.println(routingTable.size());
     }
 
     private void removeService(String hostLocation){

@@ -61,7 +61,7 @@ public class MiddlewareVerticalSkeleton extends SenderConnection{
                     DatagramPacket packet = new DatagramPacket(buf, buf.length);
                     socket.receive(packet);
 
-                    String ip = new String(packet.getData());
+                    String ip = new String(packet.getData(), packet.getOffset(), packet.getLength());
                     nameServiceRegister(ip);
 
                 } catch (IOException e) {
@@ -88,7 +88,6 @@ public class MiddlewareVerticalSkeleton extends SenderConnection{
     }
 
     private void nameServiceRegister (String ip) throws IOException {
-        ip = ip.substring(7, 20);
         System.out.println("Skeleton ip " + ip);
         this.doSenderConnection();
         this.sendMessage(ip, 6688);
