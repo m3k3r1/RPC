@@ -1,0 +1,85 @@
+    public %s( ) {
+        new %s(new %s()).%s();
+        new %s(new %s()).%s();
+    }
+
+    private class %s extends %s implements %s{
+        public %s(){
+            try {
+                this.%s(%s);
+            } catch (%s) {
+                System.err.print("%s");
+            }
+        }
+
+        %s
+        public %s %s(){
+            %s (%s) {
+                try {
+                    %s %s = new %s(%s, %s.%s);
+                    %s.%s(%s);
+
+                    %s %s = new %s(new %s(%s));
+
+                    %s(%s((%s) %s.%s()));
+                    %s.%s();
+                } catch (%s) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    private class %s extends %s implements %s{
+        public %s (){
+            try {
+                this.%s(%s);
+            } catch (%s) {
+                System.err.print("%s");
+            }
+        }
+        %s
+        public %s %s(){
+            %s (%s) {
+                try {
+                    %s %s = new %s(%s, %s.%s);
+                    %s.%s(%s);
+                    %s %s= new %s(%s.%s(), 0, %s.%s());
+                    System.out.print("New Host - " +%s.%s(7,%s.%s()));
+                    %s(%s.%s(7,%s.%s()));
+                } catch (%s) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    %s %s %s(String %s){
+        try {
+            this.%s();
+            this.%s(%s,%s);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+   private %s %s(Message m){
+        %s %s = new %s();
+        %s.%s("id", %s.%s());
+        %s.%s("move", "horizontal");
+        %s.%s("orientation", %s.%s());
+        %s.%s("value", %s.%s());
+
+        System.out.println("[RECEIVED] " + obj);
+        return obj;
+    }
+    private void %s(JSONObject obj){
+        try {
+            this.%s();
+            this.%s(%s,%s);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args){
+        %s %s = new %s();
+    }
