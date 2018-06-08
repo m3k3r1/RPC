@@ -9,13 +9,27 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Broker extends SenderConnection
 {
     private List<JSONObject> temp = new ArrayList<>();
+    private String skeletonIP = "localhost";
+    private String stubIP = "localhost";
+    private String nameserverIP = "localhost";
+
+    public void setSkeletonIP(String skeletonIP) {
+        this.skeletonIP = skeletonIP;
+    }
+
+    public void setStubIP(String stubIP) {
+        this.stubIP = stubIP;
+    }
+
+    public void setNameserverIP(String nameserverIP) {
+        this.nameserverIP = nameserverIP;
+    }
 
     public Broker() {
         new Thread(new HorizontalSkeletonListener()).start();
@@ -238,16 +252,13 @@ public class Broker extends SenderConnection
         }
     }
 
-    public void saveMessageToFile(){ }
-    public void checkFile(){}
-
     private void nameServiceRegister (String ip) throws IOException {
-        this.doSenderConnection();
+        this.doSenderConnection(nameserverIP);
         this.sendMessage(ip, 7791);
     }
 
     private void nameServiceGetName(String name) throws IOException {
-        this.doSenderConnection();
+        this.doSenderConnection(nameserverIP);
         this.sendMessage(name, 7796);
 
     }
@@ -275,21 +286,21 @@ public class Broker extends SenderConnection
         String type = (String) obj.get("move");
         if(type.equals("horizontal")) {
             try {
-                this.doSenderConnection();
+                this.doSenderConnection(skeletonIP);
                 this.sendMessage(obj, 7789);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else if(type.equals("vertical")){
             try {
-                this.doSenderConnection();
+                this.doSenderConnection(skeletonIP);
                 this.sendMessage(obj, 6689);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else if(type.equals("open") || type.equals("close")){
             try {
-                this.doSenderConnection();
+                this.doSenderConnection(skeletonIP);
                 this.sendMessage(obj, 5589);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -299,19 +310,19 @@ public class Broker extends SenderConnection
 
     private void sendNameToStub(String name){
         try {
-            this.doSenderConnection();
+            this.doSenderConnection(stubIP);
             this.sendMessage(name,7792);
         } catch (IOException e) {
             e.printStackTrace();
         }
         try {
-            this.doSenderConnection();
+            this.doSenderConnection(stubIP);
             this.sendMessage(name,6692);
         } catch (IOException e) {
             e.printStackTrace();
         }
         try {
-            this.doSenderConnection();
+            this.doSenderConnection(stubIP);
             this.sendMessage(name,5592);
         } catch (IOException e) {
             e.printStackTrace();
@@ -319,6 +330,15 @@ public class Broker extends SenderConnection
     }
 
     public static void main(String[] args){
-        new Broker();
+        if(args.length < 3)
+        {
+            System.out.println("Usage: java Broker <skeleton ip> <stub ip> <nameserver ip");
+            System.exit(0);
+        }
+
+        Broker b = new Broker();
+        b.setSkeletonIP(args[0]);
+        b.setStubIP(args[1]);
+        b.setNameserverIP(args[2]);
     }
 }

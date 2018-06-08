@@ -15,6 +15,16 @@ public class NameServer extends SenderConnection{
     HashMap<String ,String> routingTable;
     int i = 0;
 
+    public String getBrokerIP() {
+        return brokerIP;
+    }
+
+    private String brokerIP = "localhost";
+
+    public void setBrokerIP(String BrokerIP) {
+        this.brokerIP = BrokerIP;
+    }
+
     public NameServer() {
         this.routingTable = new HashMap<>();
         new Thread(new BrokerListener()).start();
@@ -78,7 +88,7 @@ public class NameServer extends SenderConnection{
             System.out.println("[ADDED] " + part1[1] + " as " + routingTable.get(part1[1]));
             String send = "^" + routingTable.get(part1[1]) + "^";
             try {
-                this.doSenderConnection();
+                this.doSenderConnection(getBrokerIP());
                 this.sendMessage(send, 7790);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -86,7 +96,7 @@ public class NameServer extends SenderConnection{
         } else if(routingTable.containsKey(part1[1])) {
             String send = "^" + routingTable.get(part1[1]) + "^";
             try {
-                this.doSenderConnection();
+                this.doSenderConnection(getBrokerIP());
                 this.sendMessage(send, 7790);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -98,7 +108,7 @@ public class NameServer extends SenderConnection{
                 System.out.print("[ADDED] " + part1[1] + " as " + routingTable.get(part1[1]));
                 String send = "^" + routingTable.get(part1[1]) + "^";
                 try {
-                    this.doSenderConnection();
+                    this.doSenderConnection(getBrokerIP());
                     this.sendMessage(send, 7790);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -124,9 +134,17 @@ public class NameServer extends SenderConnection{
     }
 
     private void sendIP(String ip) throws IOException {
-        this.doSenderConnection();
+        this.doSenderConnection(brokerIP);
         this.sendMessage(ip,7795);
     }
 
-    public static void main(String[] args){ NameServer dns = new NameServer(); }
+    public static void main(String[] args){
+        if(args.length == 0)
+        {
+            System.out.println("Usage: java NameServer <broker ip>");
+            System.exit(0);
+        }
+        NameServer dns = new NameServer();
+        dns.setBrokerIP(args[0]);
+    }
 }

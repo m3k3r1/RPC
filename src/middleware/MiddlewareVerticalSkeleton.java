@@ -11,6 +11,11 @@ import java.net.SocketException;
 
 
 public class MiddlewareVerticalSkeleton extends SenderConnection{
+    private String brokerIP = "localhost";
+
+    public void setBrokerIP(String brokerPort) {
+        this.brokerIP = brokerPort;
+    }
 
     public MiddlewareVerticalSkeleton(){
         new Thread (new listenerStubAndActionPerformer()).start();
@@ -89,12 +94,19 @@ public class MiddlewareVerticalSkeleton extends SenderConnection{
 
     private void nameServiceRegister (String ip) throws IOException {
         System.out.println("Skeleton ip " + ip);
-        this.doSenderConnection();
+        this.doSenderConnection(brokerIP);
         this.sendMessage(ip, 6688);
     }
 
     public static void main(String[] args) {
-         MiddlewareVerticalSkeleton vertical = new MiddlewareVerticalSkeleton();
+        if(args.length == 0)
+        {
+            System.out.println("Usage: java MiddlewareVerticalSkeleton <broker ip>");
+            System.exit(0);
+        }
+
+        MiddlewareVerticalSkeleton vertical = new MiddlewareVerticalSkeleton();
+        vertical.setBrokerIP(args[0]);
     }
 
 

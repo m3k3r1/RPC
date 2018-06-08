@@ -14,6 +14,15 @@ import java.util.ArrayList;
 
 public class MiddlewareHorizontalStub extends SenderConnection {
 
+    private String brokerIP = "localhost";
+    private String appIP = "localhost";
+
+    public void setAppIP(String appIP) { this.appIP = appIP; }
+
+    public void setBrokerIP(String brokerPort) {
+        this.brokerIP = brokerPort;
+    }
+
     public MiddlewareHorizontalStub( ) {
         new Thread(new GUIListener()).start();
         new Thread(new BrokerListener()).start();
@@ -71,7 +80,7 @@ public class MiddlewareHorizontalStub extends SenderConnection {
 
     private void sendHosts(String robot){
         try {
-            this.doSenderConnection();
+            this.doSenderConnection(appIP);
             this.sendMessage(robot,7793);
         } catch (IOException e) {
             e.printStackTrace();
@@ -91,7 +100,7 @@ public class MiddlewareHorizontalStub extends SenderConnection {
     }
     private void sendMarshelledMessage(JSONObject obj){
         try {
-            this.doSenderConnection();
+            this.doSenderConnection(brokerIP);
             this.sendMessage(obj,7799);
         } catch (IOException e) {
             e.printStackTrace();
@@ -99,6 +108,13 @@ public class MiddlewareHorizontalStub extends SenderConnection {
     }
 
     public static void main(String[] args){
+        if(args.length < 2)
+        {
+            System.out.println("Usage: java MiddlewareHorizontalStub <broker ip> <gui ip>");
+            System.exit(0);
+        }
         MiddlewareHorizontalStub stub = new MiddlewareHorizontalStub();
+        stub.setBrokerIP(args[0]);
+        stub.setAppIP(args[1]);
     }
 }

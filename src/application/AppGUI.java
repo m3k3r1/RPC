@@ -14,6 +14,8 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Handler;
 
 public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGripper, IIDLCaDSEV3RMIMoveHorizontal, IIDLCaDSEV3RMIMoveVertical, IIDLCaDSEV3RMIUltraSonic, ICaDSRMIConsumer {
@@ -21,17 +23,39 @@ public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGrippe
     String robot;
     int orientation_h = 0;
     int orientation_v = 0;
-    String namehost;
     List<String> robots = new ArrayList<>();
 
-     public AppGUI(String namehost) {
-         this.namehost = namehost;
+     public AppGUI() {
          gui = new CaDSRobotGUISwing(this,this,this,this,this);
         new Thread(new HorizontalStubListener()).start();
         new Thread(new VerticalStubListener()).start();
         new Thread(new GrabberStubListener()).start();
+        while(true) {
+            clearRobots();
+        }
     }
 
+    private String stubIP = "localhost";
+
+    public void setStubIP(String stubIP) { this.stubIP = stubIP; }
+
+    private void clearRobots() {
+        Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    // Your database code here
+                    if(robots == null){
+                        System.out.println("There are no robots registered.");
+                    } else {
+                        for (int j = 0; j < robots.size(); j++) {
+                            gui.removeService(robots.get(j));
+                        }
+                        robots.clear();
+                    }
+                }
+            }, 5000);
+    }
 
 
     private class HorizontalStubListener extends ReceiverConnection implements  Runnable {
@@ -108,6 +132,7 @@ public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGrippe
 
      synchronized void addService(String s){
          String[] part1 = s.split("\\^");
+         System.out.println(part1[1]);
          if(robots.size() == 0) {
              robots.add(part1[1]);
              gui.addService(part1[1]);
@@ -137,14 +162,14 @@ public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGrippe
     @Override
     public int closeGripper(int transactionID) throws Exception {
         System.out.println("Close.... TID: " + transactionID);
-        this.doSenderConnection(namehost);
+        this.doSenderConnection(stubIP);
         sendMessage(new Message(robot,"close",transactionID, 100, "close"),5598);
         return 0;
     }
     @Override
     public int openGripper(int transactionID) throws Exception {
         System.out.println("open.... TID: " + transactionID);
-        this.doSenderConnection(namehost);
+        this.doSenderConnection(stubIP);
         sendMessage(new Message(robot,"open",transactionID, 100, "open"),5598);
         return 0;
     }
@@ -155,22 +180,19 @@ public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGrippe
     @Override
     public int moveHorizontalToPercent(int transactionID, int percent) throws Exception {
         System.out.println("Call to move vertical -  TID: " + transactionID + " degree " + percent);
-        this.doSenderConnection(namehost);
+        this.doSenderConnection(stubIP);
         if (percent > orientation_h)
             sendMessage(new Message(robot,"horizontal",transactionID,percent, "left"),7798);
         else
             sendMessage(new Message(robot,"horizontal",transactionID,percent, "right"),7798);
-        for(int j = 0; i < robots.size(); j++){
-            gui.removeService(robots.get(j));
-        }
-        robots.clear();
+
         orientation_h = percent;
         return 0;
     }
     @Override
     public int moveVerticalToPercent(int transactionID, int percent) throws Exception {
         System.out.println("Call to move vertical -  TID: " + transactionID + " degree " + percent);
-        this.doSenderConnection(namehost);
+        this.doSenderConnection(stubIP);
 
         if (percent > orientation_v)
             sendMessage(new Message(robot,"vertical",transactionID,percent, "up"), 6698);
@@ -199,6 +221,12 @@ public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGrippe
     }
 
     public static void main(String[] args){
-         AppGUI g = new AppGUI("localhost");
+        if(args.length == 0)
+        {
+            System.out.println("Usage: java AppGui <stub ip>");
+            System.exit(0);
+        }
+         AppGUI g = new AppGUI();
+        g.setStubIP(args[0]);
     }
 }

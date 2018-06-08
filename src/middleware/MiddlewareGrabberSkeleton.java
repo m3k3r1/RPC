@@ -11,6 +11,11 @@ import java.net.SocketException;
 
 
 public class MiddlewareGrabberSkeleton extends SenderConnection{
+    private String brokerIP = "localhost";
+
+    public void setBrokerIP(String brokerPort) {
+        this.brokerIP = brokerPort;
+    }
 
     public MiddlewareGrabberSkeleton(){
         new Thread (new listenerStubAndActionPerformer()).start();
@@ -89,12 +94,18 @@ public class MiddlewareGrabberSkeleton extends SenderConnection{
 
     private void nameServiceRegister (String ip) throws IOException {
         System.out.println(ip);
-        this.doSenderConnection();
+        this.doSenderConnection(brokerIP);
         this.sendMessage(ip, 5588);
     }
 
     public static void main(String[] args) {
-         MiddlewareGrabberSkeleton grabber = new MiddlewareGrabberSkeleton();
+        if(args.length == 0)
+        {
+            System.out.println("Usage: java MiddlewareGrabberSkeleton <broker ip>");
+            System.exit(0);
+        }
+        MiddlewareGrabberSkeleton grabber = new MiddlewareGrabberSkeleton();
+        grabber.setBrokerIP(args[0]);
     }
 
 

@@ -9,11 +9,13 @@ import java.util.Enumeration;
 
 public class RobotController extends SenderConnection{
     protected static  ActionHorizontal h;
-    String skeletonIP;
     String ip;
 
-    public RobotController(String hostname) {
-        skeletonIP = hostname;
+    private String skeletonIP = "localhost";
+
+    public void setSkeletonIP(String skeletonIP) { this.skeletonIP = skeletonIP; }
+
+    public RobotController() {
         new Thread(new HorizontalSkeletonListener()).start();
         new Thread(new VerticalSkeletonListener()).start();
         new Thread(new GrabberSkeletonListener()).start();
@@ -182,6 +184,12 @@ public class RobotController extends SenderConnection{
     }
 
     public static void main(String[] args) throws IOException {
-        RobotController robot = new RobotController("localhost");
+        if(args.length == 0)
+        {
+            System.out.println("Usage: java RobotController <skeleton ip>");
+            System.exit(0);
+        }
+        RobotController robot = new RobotController();
+        robot.setSkeletonIP(args[0]);
     }
 }
