@@ -30,8 +30,19 @@ public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGrippe
         new Thread(new HorizontalStubListener()).start();
         new Thread(new VerticalStubListener()).start();
         new Thread(new GrabberStubListener()).start();
-        while(true) {
-            clearRobots();
+
+         Timer timer = new Timer();
+         timer.scheduleAtFixedRate(new ClearRobots(), 0, 30000);
+    }
+
+    private class ClearRobots extends TimerTask {
+
+        @Override
+        public void run() {
+            for (int j = 0; j < robots.size(); j++) {
+                gui.removeService(robots.get(j));
+            }
+            robots.clear();
         }
     }
 
@@ -39,23 +50,7 @@ public class AppGUI extends SenderConnection implements IIDLCaDSEV3RMIMoveGrippe
 
     public void setStubIP(String stubIP) { this.stubIP = stubIP; }
 
-    private void clearRobots() {
-        Timer timer = new Timer();
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    // Your database code here
-                    if(robots == null){
-                        System.out.println("There are no robots registered.");
-                    } else {
-                        for (int j = 0; j < robots.size(); j++) {
-                            gui.removeService(robots.get(j));
-                        }
-                        robots.clear();
-                    }
-                }
-            }, 5000);
-    }
+
 
 
     private class HorizontalStubListener extends ReceiverConnection implements  Runnable {
