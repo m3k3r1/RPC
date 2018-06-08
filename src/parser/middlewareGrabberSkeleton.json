@@ -13,7 +13,7 @@
   "className" : "grabber",
   "extends" : "SenderConnection",
   "InnerClasses" : [
-    {"name" : "listenerStubAndActionPerformer",
+    {"name" : "listenerBrokerAndActionPerformer",
       "extends" : "ReceiverConnection",
       "implements" : "Runnable"},
     {"name" : "listenerRobotAndRegisterNameService",
@@ -54,7 +54,7 @@
       "option2" : "20",
       "function1" : "doSenderConnection",
       "function2" : "sendMessage",
-      "option3" : "5596",
+      "option3" : "5588",
       "ip" : "ip"}
   ],
   "Threads" : [
@@ -101,7 +101,7 @@
   ],
   "constructorStub" : [
     {"function1" : "doReceiverConnection",
-      "port" : "5599",
+      "port" : "5589",
       "exception" : "SocketException e",
       "error" : "[ERROR] - Couldn't create socket"}
   ],
@@ -148,5 +148,27 @@
       "var2Name" : "ip",
       "option3" : "getData",
       "excep" : "IOException e"}
+  ],
+  "BrokerIP" : [{
+    "type": "private",
+    "typeV": "String",
+    "name": "brokerIP",
+    "init": "\"localhost\""}
+  ],
+  "brokerSetter" : [{
+    "return" : "void",
+    "name" : "setBrokerIP",
+    "argType" : "String",
+    "argName" : "brokerPort"}
+  ],
+  "ifArgs" : [{
+    "if" : "if",
+    "args" : "args",
+    "function" : "length",
+    "equal" : "0",
+    "function1" : "System.out.println",
+    "message" : "\"Usage: java MiddlewareGrabberSkeleton <broker ip>\"",
+    "function2" : "System.exit"
+  }
   ]
 }

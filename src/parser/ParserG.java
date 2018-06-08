@@ -55,9 +55,61 @@ public class ParserG {
         JSONArray constructorRobot = (JSONArray) jsonObject.get("constructorRobot");
         JSONArray runRobot = (JSONArray) jsonObject.get("RunRobot");
         JSONArray runJSON = (JSONArray) jsonObject.get("RunJSON");
+        JSONArray brokerIP = (JSONArray) jsonObject.get("BrokerIP");
+        JSONArray setBrokerIP = (JSONArray) jsonObject.get("brokerSetter");
+        JSONArray ifState = (JSONArray) jsonObject.get("ifArgs");
+
         String aClass = (String) jsonObject.get("class");
         String aClassName = (String) jsonObject.get("className");
         String extend = (String) jsonObject.get("extends");
+
+        //broker variable
+        ArrayList<String> brokerVariable = new ArrayList<>();
+        for (Object obj : brokerIP) {
+            JSONObject jsonObj = (JSONObject) obj;
+            String i1 = (String) jsonObj.get("type");
+            String i2 = (String) jsonObj.get("typeV");
+            String i3 = (String) jsonObj.get("name");
+            String i4 = (String) jsonObj.get("init");
+            brokerVariable.add(i1);
+            brokerVariable.add(i2);
+            brokerVariable.add(i3);
+            brokerVariable.add(i4);
+        }
+
+        //brokerIP setter
+        ArrayList<String> brokerSetter = new ArrayList<>();
+        for (Object obj : setBrokerIP) {
+            JSONObject jsonObj = (JSONObject) obj;
+            String i1 = (String) jsonObj.get("return");
+            String i2 = (String) jsonObj.get("name");
+            String i3 = (String) jsonObj.get("argType");
+            String i4 = (String) jsonObj.get("argName");
+            brokerSetter.add(i1);
+            brokerSetter.add(i2);
+            brokerSetter.add(i3 + " " + i4);
+            brokerSetter.add(i4);
+        }
+
+        //brokerIP IF
+        ArrayList<String> lastThing = new ArrayList<>();
+        for (Object obj : ifState) {
+            JSONObject jsonObj = (JSONObject) obj;
+            String i1 = (String) jsonObj.get("if");
+            String i2 = (String) jsonObj.get("args");
+            String i3 = (String) jsonObj.get("function");
+            String i4 = (String) jsonObj.get("equal");
+            String i5 = (String) jsonObj.get("function1");
+            String i6 = (String) jsonObj.get("message");
+            String i7 = (String) jsonObj.get("function2");
+            lastThing.add(i1);
+            lastThing.add(i2);
+            lastThing.add(i3);
+            lastThing.add(i4);
+            lastThing.add(i5);
+            lastThing.add(i6);
+            lastThing.add(i7);
+        }
 
         ArrayList<String> imports = new ArrayList<>();
         for (Object obj : imp) {
@@ -125,9 +177,7 @@ public class ParserG {
             nameServerList.add(i6);
             nameServerList.add(i7);
         }
-        String op1;
         String op2;
-        op1 = nameServerList.get(1) + ", " + nameServerList.get(2);
         op2 = nameServerList.get(6) + ", " + nameServerList.get(3);
 
         //send message
@@ -302,6 +352,17 @@ public class ParserG {
 
         innerClassString = String.format(
                 methodsString,
+                //brokerIP
+                brokerVariable.get(0),
+                brokerVariable.get(1),
+                brokerVariable.get(2),
+                brokerVariable.get(3),
+                //BrokerSetter
+                brokerSetter.get(0),
+                brokerSetter.get(1),
+                brokerSetter.get(2),
+                brokerVariable.get(2),
+                brokerSetter.get(3),
                 // Constructor
                 aClass,
                 threadsList.get(0),
@@ -409,20 +470,29 @@ public class ParserG {
                 methodsName.get(2),
                 parameterMaker(parameterPositionMap, 4, 5),
                 methodsThrows.get(2),
-                nameServerList.get(6),
-                nameServerList.get(6),
-                nameServerList.get(0),
-                op1,
                 nameServerList.get(4),
+                brokerVariable.get(2),
                 nameServerList.get(5),
-                op2,
+                op2, //7796
                 //Main body
+                lastThing.get(0),
+                lastThing.get(1),
+                lastThing.get(2),
+                lastThing.get(3),
+                lastThing.get(4),
+                lastThing.get(5),
+                lastThing.get(6),
+                lastThing.get(3),
                 aClass,
                 aClassName,
-                aClass);
+                aClass,
+                aClassName,
+                brokerSetter.get(1),
+                lastThing.get(1),
+                lastThing.get(3));
 
         classString = String.format(outString, path, importsClassString, aClass, extend, innerClassString);
-        System.out.println(classString);
+        //System.out.println(classString);
         writeClass(aClass, classString);
         m = 1;
         unmar.clear();

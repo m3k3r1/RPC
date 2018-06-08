@@ -1,4 +1,10 @@
-public %s(){
+%s %s %s = %s;
+
+    public %s %s(%s){
+        this.%s = %s;
+    }
+
+    public %s(){
         new %s (new %s()).%s();
         new %s (new %s()).%s();
     }
@@ -74,12 +80,16 @@ public %s(){
     }
 
     %s %s %s (%s) throws %s {
-        %s = %s.%s(%s);
 
-        this.%s();
+        this.%s(%s);
         this.%s(%s);
     }
 
     public static void main(String[] args) {
+        %s(%s.%s == %s){
+            %s(%s);
+            %s(%s);
+        }
          %s %s = new %s();
+         %s.%s(%s[%s]);
     }
