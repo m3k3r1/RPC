@@ -12,6 +12,11 @@ import java.nio.charset.StandardCharsets;
 
 
 public class MiddlewareHorizontalSkeleton extends SenderConnection{
+    private String brokerIP = "localhost";
+
+    public void setBrokerIP(String brokerPort) {
+        this.brokerIP = brokerPort;
+    }
 
     public MiddlewareHorizontalSkeleton(){
         new Thread (new listenerBrokerAndActionPerformer()).start();
@@ -82,7 +87,6 @@ public class MiddlewareHorizontalSkeleton extends SenderConnection{
         System.out.println(msg);
         System.out.println(ip);
         sendMessage (msg, ip);
-
     }
 
     private void sendMessage (String msg, String ip) throws IOException {
@@ -91,14 +95,18 @@ public class MiddlewareHorizontalSkeleton extends SenderConnection{
     }
 
     private void nameServiceRegister (String ip) throws IOException {
-        //System.out.println(ip);
-        System.out.println("Skeleton - " + ip);
-        this.doSenderConnection();
+        this.doSenderConnection(brokerIP);
         this.sendMessage(ip, 7788);
     }
 
     public static void main(String[] args) {
+        if(args.length == 0)
+        {
+            System.out.println("Usage: java MiddlewareHorizontalSkeleton <broker ip>");
+            System.exit(0);
+        }
          MiddlewareHorizontalSkeleton horizontal = new MiddlewareHorizontalSkeleton();
+         horizontal.setBrokerIP(args[0]);
     }
 
 

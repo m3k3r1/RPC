@@ -12,6 +12,16 @@ import java.net.DatagramPacket;
 import java.net.SocketException;
 
 public class MiddlewareVerticalStub  extends SenderConnection {
+
+    private String brokerIP = "localhost";
+    private String appIP = "localhost";
+
+    public void setAppIP(String appIP) { this.appIP = appIP; }
+
+    public void setBrokerIP(String brokerPort) {
+        this.brokerIP = brokerPort;
+    }
+
     public MiddlewareVerticalStub() {
         new Thread(new GUIListener()).start();
         new Thread(new BrokerListener()).start();
@@ -70,7 +80,7 @@ public class MiddlewareVerticalStub  extends SenderConnection {
 
     private void sendHosts(String robot){
         try {
-            this.doSenderConnection();
+            this.doSenderConnection(appIP);
             this.sendMessage(robot,6693);
         } catch (IOException e) {
             e.printStackTrace();
@@ -91,7 +101,7 @@ public class MiddlewareVerticalStub  extends SenderConnection {
 
     private void sendMarshelledMessage(JSONObject obj){
         try {
-            this.doSenderConnection();
+            this.doSenderConnection(brokerIP);
             this.sendMessage(obj, 6699);
         } catch (IOException e) {
             e.printStackTrace();
@@ -99,7 +109,14 @@ public class MiddlewareVerticalStub  extends SenderConnection {
     }
 
     public static void main(String[] args){
+        if(args.length < 2)
+        {
+            System.out.println("Usage: java MiddlewareVerticalStub <broker ip> <gui ip>");
+            System.exit(0);
+        }
         MiddlewareVerticalStub stub = new MiddlewareVerticalStub();
+        stub.setBrokerIP(args[0]);
+        stub.setAppIP(args[1]);
     }
 
 }
