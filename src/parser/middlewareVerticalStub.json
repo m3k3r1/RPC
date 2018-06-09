@@ -26,9 +26,9 @@
  
     ],
  
-  "class" : "MiddlewareHorizontalStub",
+  "class" : "MiddlewareVerticalStub",
  
-  "className" : "horizontal",
+  "className" : "vertical",
  
   "extends" : "SenderConnection",
   
@@ -110,7 +110,7 @@
  
     "function2" : "sendMessage",
  
-    "option3" : "7793",
+    "option3" : "6693",
  
     "robot" : "robot"}
  
@@ -132,7 +132,7 @@
  
       "option1" : "obj",
  
-      "option2" : "7799",
+      "option2" : "6699",
  
     }
  
@@ -159,7 +159,9 @@
           "getO": "getOrientation",
  
           "getS": "getSlide",
-          "horizontal" : "vertical"
+      "getRobotName": "getRobot",
+      "getMessage": " ",
+          "horizontal" : "\"vertical\""
  
     }
  
@@ -169,7 +171,7 @@
  
     {"function1" : "doReceiverConnection",
  
-    "port" : "7798",
+    "port" : "6698",
  
       "exception" : "SocketException e",
  
@@ -225,7 +227,7 @@
  
     {"function1" : "doReceiverConnection",
  
-      "port" : "7792",
+      "port" : "6692",
  
       "exception" : "SocketException e",
  
@@ -303,7 +305,7 @@
     "equal" : "0",
     "equal2" : "2",
     "function1" : "System.out.println",
-    "message" : "\"Usage: java MiddlewareHorizontalSkeleton <broker ip>\"",
+    "message" : "\"Usage: java MiddlewareVerticalStub <broker ip> <gui ip>\"",
     "function2" : "System.exit",
     
     "stub" : "stub"

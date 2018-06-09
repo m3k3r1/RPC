@@ -1,9 +1,1 @@
-package %s; 
- 
-%s 
- 
-public class %s extends %s{ 
- 
-    %s 
- 
-}
+package %s;%spublic class %s extends %s{    %s}
