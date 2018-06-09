@@ -1,4 +1,13 @@
-    public %s( ) { 
+%s %s %s = %s;
+    %s %s %s = %s;
+
+    public %s %s(%s){ this.%s = %s; }
+
+    public %s %s(%s){
+        this.%s = %s;
+    }    
+
+	public %s( ) { 
         new %s(new %s()).%s(); 
         new %s(new %s()).%s(); 
     } 
@@ -55,7 +64,7 @@
  
     %s %s %s(String %s){ 
         try { 
-            this.%s(); 
+            this.%s(%s); 
             this.%s(%s,%s); 
         } catch (IOException e) { 
             e.printStackTrace(); 
@@ -64,7 +73,7 @@
    private %s %s(Message m){ 
         %s %s = new %s(); 
         %s.%s("id", %s.%s()); 
-        %s.%s("move", "horizontal"); 
+        %s.%s("move", %s); 
         %s.%s("orientation", %s.%s()); 
         %s.%s("value", %s.%s()); 
  
@@ -73,7 +82,7 @@
     } 
     private void %s(JSONObject obj){ 
         try { 
-            this.%s(); 
+            this.%s(%s); 
             this.%s(%s,%s); 
         } catch (IOException e) { 
             e.printStackTrace(); 
@@ -81,5 +90,11 @@
     } 
  
     public static void main(String[] args){ 
-        %s %s = new %s(); 
+	%s(%s.%s < %s){
+            %s(%s);
+            %s(%s);
+        }
+	%s %s = new %s();
+	%s.%s(%s[%s]);
+	%s.%s(%s[%s]);
     }
