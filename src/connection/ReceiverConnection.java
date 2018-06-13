@@ -1,7 +1,5 @@
 package connection;
 
-import message.Message;
-
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.SocketException;

@@ -1,7 +1,4 @@
 package connection;
-
-import message.Message;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
