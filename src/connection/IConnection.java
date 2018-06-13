@@ -1,6 +1,5 @@
 package connection;
 
-import message.Message;
 import org.json.simple.JSONObject;
 //import simulation.ActionLeftRight;
 
