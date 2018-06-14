@@ -1,4 +1,4 @@
-package consumer;
+package vs.consumer;
 
 import org.cads.ev3.gui.ICaDSRobotGUIUpdater;
 import org.cads.ev3.rmi.consumer.ICaDSRMIConsumer;

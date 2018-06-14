@@ -1,4 +1,4 @@
-package provider;
+package vs.provider;
 
 public class Skeleton {
     Robot robot;

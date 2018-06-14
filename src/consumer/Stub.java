@@ -1,4 +1,4 @@
-package consumer;
+package vs.consumer;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
