@@ -1,8 +1,9 @@
-package broker;
+package vs.broker;
 
-import connection.ReceiverConnection;
-import connection.SenderConnection;
+
 import org.json.simple.JSONObject;
+import vs.connection.ReceiverConnection;
+import vs.connection.SenderConnection;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -17,33 +18,43 @@ public class Broker  extends SenderConnection{
     HashMap<String, String > services;
     ArrayList<String> robots;
     ArrayList<String> consumers;
+    ArrayList<String> feedbackConsumers;
     ArrayList<String> consumerMessages;
     ArrayList<String> providerMessages;
+    ArrayList<JSONObject> feedback;
 
 
     public Broker(int providerPort, int consumerPort) {
         services = new HashMap<>();
         robots = new ArrayList<>();
         consumers = new ArrayList<>();
+        feedback = new ArrayList<>();
+        feedbackConsumers = new ArrayList<>();
         consumerMessages = new ArrayList<>();
         providerMessages = new ArrayList<>();
 
         new Thread(new ProviderListener(providerPort)).start();
         new Thread(new ConsumerListener(consumerPort)).start();
         new Thread(new MessagesSenderConsumer()).start();
+
      }
 
     private void handleMessage(JSONObject msg, String senderIP){
-        if(msg.get("type").equals("registry")){
-            registerService(   msg.get("ip").toString(),    msg.get("robot") + "/" + msg.get("service"), msg.get("robot").toString());
-        } else if (msg.get("type").equals("subscribe")) {
-            subscribeConsumer(senderIP);
-        } else if (msg.get("type").equals("action")){
-            callRemoteService(msg.get("robot").toString() + "/" + msg.get("movement") , msg.get("value").toString());
-        }
+    	if(msg!=null) {
+            if(msg.get("type").equals("registry")){
+                registerService(senderIP, msg.get("port").toString(),    msg.get("robot") + "/" + msg.get("service"), msg.get("robot").toString());
+            } else if (msg.get("type").equals("subscribe")) {
+                subscribeConsumer(senderIP);
+            } else if (msg.get("type").equals("action")){
+                callRemoteService(msg.get("robot").toString() + "/" + msg.get("movement") , msg.get("value").toString());
+            } else if (msg.get("type").equals("feedback")) {
+            	sendFeedback(msg);
+            }
+    	}
     }
-    private void registerService(String ip, String service, String robot){
-        if(!robots.contains(robot)){
+    private void registerService(String ip, String port, String service, String robot){
+        ip=ip.split("/")[1];
+    	if(!robots.contains(robot)){
             robots.add(robot);
         }
 
@@ -51,12 +62,13 @@ public class Broker  extends SenderConnection{
             System.out.println("[SERVICE] - " + service + " already added");
 
         } else {
-            System.out.println("[NEW SERVICE] - " + service + " on " + ip);
-            services.put(service, ip);
+            System.out.println("[NEW SERVICE] - " + service + " on " + ip +":"+port);
+            services.put(service, ip + ":"+ port);
         }
     }
     private void subscribeConsumer(String senderIP){
         consumers.add(senderIP.split("/")[1]);
+        feedbackConsumers.add(senderIP.split("/")[1]);
         System.out.println("[SUBSCRIPTION] - " +senderIP.split("/")[1] + "/Consumer subscribed to services");
     }
     private void callRemoteService(String service, String value) {
@@ -69,19 +81,37 @@ public class Broker  extends SenderConnection{
 
         for (Map.Entry<String, String> entry : services.entrySet()) {
             String s = entry.getKey();
-            String ip = entry.getValue();
+            String ip = entry.getValue().split(":")[0];
+            String port = entry.getValue().split(":")[1];
             if (s.equals(service)) {
-                System.out.println("[REMOTE] - Execute "  + service + "?value=" + value + " on " + ip+"1005");
+                System.out.println("[REMOTE] - Execute "  + service + "?value=" + value + " on " + ip+":"+port);
                 try {
                     this.doSenderConnection(ip);
-                    this.sendMessage(obj, 1005);
+                    this.sendMessage(obj, Integer.parseInt(port));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
     }
-
+    private void sendFeedback(JSONObject msg) {
+      	 try {
+	    	for(String hostName : feedbackConsumers) {
+				this.doSenderConnection(hostName);
+				System.out.println("[SERVICE] - Sending feedback service to " + hostName + "/Consumer");
+	            this.sendMessage(msg, 1010);
+                this.close();
+	        }
+	    }catch (SocketException | UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		
+		} catch (IOException | NullPointerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
     private class ConsumerListener extends ReceiverConnection {
         public ConsumerListener(int port) {
             try {
@@ -140,16 +170,17 @@ public class Broker  extends SenderConnection{
             while(true){
                 try {
                     if(consumers.size() > 0 && robots.size() > 0) {
-                        String hostname = consumers.get(0);
-                        this.doSenderConnection(hostname);
-                        for(String s: robots){
-                            System.out.println("[SERVICE] - Sending "+ s+" service to " + hostname + "/Consumer");
-                            JSONObject obj = new JSONObject();
-                            obj.put("robot", s);
-                            this.sendMessage(obj, 1003);
-                            this.close();
-                        }
-                        consumers.remove(0);
+                    	for(String hostname : consumers) {
+                            this.doSenderConnection(hostname);
+                            for(String s: robots){
+                                System.out.println("[SERVICE] - Sending "+ s+" service to " + hostname + "/Consumer");
+                                JSONObject obj = new JSONObject();
+                                obj.put("robot", s);
+                                this.sendMessage(obj, 1003);
+                                this.close();
+                            }
+                    	}
+                    	consumers.clear();
                     }
                     Thread.sleep(1000);
                 } catch (InterruptedException | IOException  e) {
@@ -158,7 +189,7 @@ public class Broker  extends SenderConnection{
             }
         }
     }
-
+    
     public static void main(String[] args){
         new Broker(1000, 1001);
     }

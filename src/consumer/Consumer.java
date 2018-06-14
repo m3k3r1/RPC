@@ -1,10 +1,12 @@
-package consumer;
+package vs.consumer;
 
-import connection.ReceiverConnection;
-import connection.SenderConnection;
 import org.cads.ev3.gui.swing.CaDSRobotGUISwing;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
+import vs.connection.ReceiverConnection;
+import vs.connection.SenderConnection;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
@@ -16,15 +18,17 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 public class Consumer implements PropertyChangeListener {
+	private String brokerIP;
     private Stub stub;
     private GUIController guiController;
     private CaDSRobotGUISwing gui;
     private ArrayList<String> robots;
     private ArrayList<JSONObject> messages;
 
-    public Consumer() {
+    public Consumer(String brokerHost) {
         robots = new ArrayList<String>();
         messages = new ArrayList<>();
+        brokerIP = brokerHost;
     }
 
     public void subscribe(){
@@ -40,15 +44,13 @@ public class Consumer implements PropertyChangeListener {
         guiController = new GUIController(stub);
         gui = new CaDSRobotGUISwing(guiController,guiController,guiController,guiController,guiController);
 
-        new Thread(new MessageSenderThread("localhost", 1001)).start();
+        new Thread(new MessageSenderThread(brokerIP, 1001)).start();
         new Thread(new RobotFeedbackListener()).start();
     }
-
     @Override
     public void propertyChange(PropertyChangeEvent arg0) {
         messages.add(stub.getJSON());
     }
-
     private class MessageSenderThread  extends SenderConnection  implements Runnable  {
         int brokerPort;
 
@@ -110,6 +112,36 @@ public class Consumer implements PropertyChangeListener {
             }
         }
     }
-    private class RobotFeedbackListener  extends ReceiverConnection{}
+    private class RobotFeedbackListener  extends ReceiverConnection{
+        public RobotFeedbackListener() {
+            try {
+                this.doReceiverConnection(1010);
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
+        }
 
+        @Override
+        public void run(){
+            while (true){
+                try {
+                    DatagramPacket packet = new DatagramPacket(buf, buf.length);
+                    socket.receive(packet);
+                    ObjectInputStream iStream = new ObjectInputStream(new ByteArrayInputStream(buf));
+                    JSONObject feedback = (JSONObject) iStream.readObject();
+                    System.out.println(feedback);
+                    
+                    int v = Integer.parseInt(feedback.get("vertical").toString());
+                    gui.setVerticalProgressbar(v);
+                    int h = Integer.parseInt(feedback.get("horizontal").toString());
+                    gui.setHorizontalProgressbar(h);
+                    
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+            }
+        }
+    }
+  }
 }

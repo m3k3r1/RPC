@@ -1,7 +1,4 @@
-package connection;
-
-import org.json.simple.JSONObject;
-//import simulation.ActionLeftRight;
+package vs.connection;
 
 import java.io.IOException;
 import java.net.SocketException;

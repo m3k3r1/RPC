@@ -1,4 +1,4 @@
-package connection;
+package vs.connection;
 
 import java.io.IOException;
 import java.net.DatagramSocket;
