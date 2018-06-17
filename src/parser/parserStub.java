@@ -28,7 +28,7 @@ public class parserStub {
     }
 
     private void writeClass(String Class, String classString) throws IOException {
-        String fileName = "src/middleware/" + Class + ".java";
+        String fileName = "src/parser/" + Class + ".java";
         PrintWriter writer = new PrintWriter(new FileWriter(new File(fileName)));
         writer.print(classString);
         writer.flush();
@@ -324,7 +324,7 @@ ArrayList<String> marshallList = new ArrayList<>();
         classString = String.format(outString, path, importsClassString, aClass, innerClassString);
  
         System.out.println(classString);
-        //writeClass(aClass, classString);
+        writeClass(aClass, classString);
  
         m = 1;
         unmar.clear();
