@@ -17,9 +17,8 @@ public class parserStub {
     public parserStub(){
  
         try {
-            createSkeleton(readFromJSONFile("src/parser/Stub.json"));
-            //createSkeleton(readFromJSONFile("src/parser/middlewareVerticalStub.json"));
-            //createSkeleton(readFromJSONFile("src/parser/middlewareGrabberStub.json"));
+            createStub(readFromJSONFile("src/parser/Stub.json"));
+            createSkeleton(readFromJSONFile("src/parser/middlewareHorizontalSkeleton.json"));
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ParseException e) {
@@ -27,8 +26,104 @@ public class parserStub {
         }
     }
 
-    private void writeClass(String Class, String classString) throws IOException {
-        String fileName = "src/parser/" + Class + ".java";
+    private void createSkeleton(JSONObject jsonObject) throws IOException {
+        String skeletonFile = readTemplate("src/parser/skeleton.txt");
+        String skeletonMethodsFile = readTemplate("src/parser/middlewareSkeletonMethods.txt");
+
+        String SkeletonMethods;
+        String skeletonFinal;
+
+        String pack = (String) jsonObject.get("package");
+        String className = (String) jsonObject.get("className");
+
+        JSONArray privateVariables = (JSONArray) jsonObject.get("PrivateVariables");
+        JSONArray methods = (JSONArray) jsonObject.get("Methods");
+        JSONArray args = (JSONArray) jsonObject.get("Args");
+
+        List<String> pVariables = new ArrayList<>();
+        List<String> methodsCommon = new ArrayList<>();
+        List<String> methodsName = new ArrayList<>();
+        List<String> methodsArgs = new ArrayList<>();
+
+        for (Object obj : privateVariables) {
+            JSONObject jsonObj = (JSONObject) obj;
+            String type = (String) jsonObj.get("type");
+            String name = (String) jsonObj.get("name");
+            pVariables.add(type);
+            pVariables.add(name);
+        }
+
+        for (Object obj : methods) {
+            JSONObject jsonObj = (JSONObject) obj;
+            String ret = (String) jsonObj.get("return");
+            String mvVertical = (String) jsonObj.get("name1");
+            String mvHorizontal = (String) jsonObj.get("name2");
+            String mvGrabber = (String) jsonObj.get("name3");
+            methodsCommon.add(ret);
+            methodsName.add(mvVertical);
+            methodsName.add(mvHorizontal);
+            methodsName.add(mvGrabber);
+        }
+
+        for (Object obj : args) {
+            JSONObject jsonObj = (JSONObject) obj;
+            String type = (String) jsonObj.get("type");
+            String name = (String) jsonObj.get("name");
+            methodsArgs.add(type);
+            methodsArgs.add(name);
+        }
+
+        SkeletonMethods = String.format(
+                skeletonMethodsFile,
+                pVariables.get(0), //Robot
+                pVariables.get(1), //robot
+                className, //Skeleton
+                pVariables.get(0), //Robot
+                pVariables.get(1), //robot
+                pVariables.get(1), //robot
+                pVariables.get(1), //robot
+                //moveVertical
+                methodsCommon.get(0), //void
+                methodsName.get(0), //moveVertical
+                methodsArgs.get(0), // int
+                methodsArgs.get(1), // percent
+                pVariables.get(1), //robot
+                methodsName.get(0), //moveVertical
+                methodsArgs.get(1), // percent
+                //moveHorizontal
+                methodsCommon.get(0), //void
+                methodsName.get(1), //moveHorizontal
+                methodsArgs.get(0), // int
+                methodsArgs.get(1), // percent
+                pVariables.get(1), //robot
+                methodsName.get(1), //moveHorizontal
+                methodsArgs.get(1), // percent
+                //moveGrabber
+                methodsCommon.get(0), //void
+                methodsName.get(2), //moveGrabber
+                methodsArgs.get(0), // int
+                methodsArgs.get(1), // percent
+                pVariables.get(1), //robot
+                methodsName.get(2), //moveGrabber
+                methodsArgs.get(1) // percent
+        );
+
+        skeletonFinal = String.format(skeletonFile, pack, className, SkeletonMethods);
+        System.out.println(skeletonFinal);
+        writeClassSkeleton(className, skeletonFinal);
+
+    }
+
+    private void writeClassStub(String Class, String classString) throws IOException {
+        String fileName = "src/consumer/" + Class + ".java";
+        PrintWriter writer = new PrintWriter(new FileWriter(new File(fileName)));
+        writer.print(classString);
+        writer.flush();
+        writer.close();
+    }
+
+    private void writeClassSkeleton(String Class, String classString) throws IOException {
+        String fileName = "src/provider/" + Class + ".java";
         PrintWriter writer = new PrintWriter(new FileWriter(new File(fileName)));
         writer.print(classString);
         writer.flush();
@@ -37,14 +132,13 @@ public class parserStub {
 
     private JSONObject readFromJSONFile(String fileName) throws IOException, ParseException {
         JSONParser parser = new JSONParser();
-        //Object object = parser.parse(new FileReader("src/parser/middlewareHorizontalSkeleton.json"));
         Object object = parser.parse(new FileReader(fileName));
         //convert Object to JSONObject
         JSONObject jsonObject = (JSONObject) object;
         return jsonObject;
     }
 
-    private void createSkeleton(JSONObject jsonObject) throws IOException {
+    private void createStub(JSONObject jsonObject) throws IOException {
         //Reading the String
  
         JSONArray imp = (JSONArray) jsonObject.get("Imports");
@@ -60,14 +154,10 @@ public class parserStub {
         String obj2 = (String) jsonObject.get("obj2");
         String changes = (String) jsonObject.get("changes");
         String sthis = (String) jsonObject.get("this");
-        
-        String mtype1 = (String) jsonObject.get("mtype1");
+
         String mtype2 = (String) jsonObject.get("mtype2");
-        String mtype3 = (String) jsonObject.get("mtype3");
-        String mtype4 = (String) jsonObject.get("mtype4");
         
         String mreturn1 = (String) jsonObject.get("mreturn1");
-        String mreturn2 = (String) jsonObject.get("mreturn2");
 //------------------------------------------------------------------------       
 
 //IMPORTS
@@ -324,7 +414,7 @@ ArrayList<String> marshallList = new ArrayList<>();
         classString = String.format(outString, path, importsClassString, aClass, innerClassString);
  
         System.out.println(classString);
-        writeClass(aClass, classString);
+        writeClassStub(aClass, classString);
  
         m = 1;
         unmar.clear();

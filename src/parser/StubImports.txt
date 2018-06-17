@@ -1,5 +1,1 @@
-<<<<<<< HEAD
-import %s;import %s;import %s;import %s;import %s;import %s;import %s;import %s;import %s;import %s;import %s;
-=======
-import %s;import %s;import %s;
->>>>>>> master
+import %s;import %s;import %s;
