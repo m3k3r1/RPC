@@ -1,0 +1,95 @@
+{
+ 
+  "Imports" : [
+ 
+    {"imp" : "java.beans.PropertyChangeListener"},
+    {"imp" : "java.beans.PropertyChangeSupport"},
+    {"imp" : "org.json.simple.JSONObject"}
+ 
+    ],
+ 
+  "class" : "Stub",
+  "obj1" : "PropertyChangeSupport",
+  "obj2" : "obj"
+  "changes" : "changes",
+  "this" : "this",
+  
+  "mtype1" : "public",
+  "mtype2" : "int",
+  "mtype3" : "String",
+  "mtype4" : "PropertyChangeListener",
+ 
+  
+  "mreturn1" : "JSONObject",
+  "mreturn2" : "void",
+  
+  "Methods" : [
+ 
+    {
+		"name1" : "getJSON",
+		"name2" : "moveVertical",
+		"name3" : "moveHorizontal",
+		"name4" : "moveGrabber",
+		"name5" : "addPropertyChangeListener",
+		"name6" : "removePropertyChangeListener",
+		"name7" : "marshall",
+		
+		"pname1" : "percent",		   
+		"pname2" : "robotId",
+		"pname3" : "l",
+		"pname4" : "movement"
+    }
+  ],
+ 
+  "getJSON" : [
+    {
+		"function1" : "JSONObject",
+		"option1" : "obj"
+	}
+  ],
+ 
+  "moveVertical" : [
+    {
+		"function1" : "marshall",
+		"option1" : "percent",
+		"option2" : "robotId",
+		"option3" : "vertical"
+	}
+  ],
+ 
+  "moveHorizontal" : [
+    {
+		"function1" : "marshall",
+		"option1" : "percent",
+		"option2" : "robotId",
+		"option3" : "horizontal"
+	}
+  ],
+ 
+  "moveGrabber" :[
+    {
+		"function1" : "marshall",
+		"option1" : "percent",
+		"option2" : "robotId",
+		"option3" : "grabber"
+	}
+  ],
+ 
+ 
+  "marshall" : [
+    {
+		"function1" : "obj",
+		"function2" : "put",
+		"option1" : "type",
+		"option2" : "action",
+		"option3" : "robot",
+		"option4" : "robotId",
+		"option5" : "movement",
+		"option6" : "value",
+		"option7" : "percent",
+		"option8" : "firePropertyChange",
+		"fOption1" : "stubJSON",
+		"fOption2" : "null"
+	} 
+  ]
+}
