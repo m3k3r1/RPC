@@ -1,5 +1,4 @@
-
-package parser;
+package vs.parser;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -115,7 +114,7 @@ public class parserStub {
     }
 
     private void writeClassStub(String Class, String classString) throws IOException {
-        String fileName = "src/consumer/" + Class + ".java";
+        String fileName = "src/vs/consumer/" + Class + ".java";
         PrintWriter writer = new PrintWriter(new FileWriter(new File(fileName)));
         writer.print(classString);
         writer.flush();
@@ -123,7 +122,7 @@ public class parserStub {
     }
 
     private void writeClassSkeleton(String Class, String classString) throws IOException {
-        String fileName = "src/provider/" + Class + ".java";
+        String fileName = "src/vs/provider/" + Class + ".java";
         PrintWriter writer = new PrintWriter(new FileWriter(new File(fileName)));
         writer.print(classString);
         writer.flush();
