@@ -1,0 +1,9 @@
+%s %s;
+
+    public %s(%s %s) {this.%s = %s;}
+
+    public %s %s (%s %s) {%s.%s(%s);}
+
+    public %s %s (%s %s) {%s.%s(%s);}
+
+    public %s %s (%s %s) {%s.%s(%s);}
