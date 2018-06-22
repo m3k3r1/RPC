@@ -20,7 +20,8 @@ public class Feedback extends Service implements PropertyChangeListener{
 	@Override
 	public void propertyChange(PropertyChangeEvent arg0) {
         JSONObject obj = robot.getFeedback();
-        obj.put("robot", robotName);
+        
+        System.out.println("[ACTION] - Action completed" + obj);
 		
 		try {
             this.doSenderConnection(brokerHost);

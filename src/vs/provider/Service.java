@@ -1,12 +1,14 @@
 package vs.provider;
 
 import vs.connection.SenderConnection;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.*;
 
 public class Service extends SenderConnection {
@@ -20,7 +22,7 @@ public class Service extends SenderConnection {
     protected int brokerPort;
 
 
-    public Service(int port, String name, String robotName ,String brokerHost, int brokerPort, Skeleton skeleton) throws SocketException {
+    public Service(int port, String name, String robotName ,String brokerHost, int brokerPort, Skeleton skeleton) throws SocketException  {
         this.port = port;
         this.serviceName = name;
         this.robotName = robotName;
@@ -32,16 +34,31 @@ public class Service extends SenderConnection {
     }
 
     public void doRegistry(){
-        JSONObject registryMsg = new JSONObject();
+    	JSONObject obj = new JSONObject();
+    	JSONObject head = new JSONObject();
+    	JSONObject body = new JSONObject();
+    	JSONObject values = new JSONObject();
+    	JSONArray params = new JSONArray();
+    	JSONArray  header = new JSONArray();
+    	JSONArray  remoteCall = new JSONArray();
 
-        registryMsg.put("type", "registry");
-        registryMsg.put("service", serviceName);
-        registryMsg.put("robot", robotName);
-        registryMsg.put("port", port);
+    	head.put("id", "");
+    	head.put("origin", robotName+"/"+serviceName+":"+port);
+        head.put("destination", "broker");
+        head.put("destinationIP", brokerHost);
+        header.add(head);
+        body.put("method", "registerRobot");
+        values.put("value", robotName+"/"+serviceName+":"+port);
+        params.add(values);
+        body.put("params", params);
+        body.put("return", "int");
+        remoteCall.add(body);
+        obj.put("header", header);
+        obj.put("remoteCall", remoteCall);
 
         try {
             this.doSenderConnection(brokerHost);
-            this.sendMessage(registryMsg, brokerPort);
+            this.sendMessage(obj, brokerPort);
         } catch (SocketException e) {
             e.printStackTrace();
         } catch (UnknownHostException e) {
@@ -54,15 +71,7 @@ public class Service extends SenderConnection {
         new Thread(new ServiceListener()).start();
     }
     private void handleCall(JSONObject msg){
-        if(msg.get("type").equals("action") & msg.get("movement").equals(serviceName)){
-            String type = msg.get("movement").toString();
-            System.out.println("[ACTION] - performing " + msg.get("movement") + " with value " + msg.get("value"));
-            switch (type){
-                case "horizontal": skeleton.moveHorizontal(Integer.parseInt(msg.get("value").toString())); break;
-                case "vertical": skeleton.moveVertical(Integer.parseInt(msg.get("value").toString())); break;
-                case "grabber": skeleton.moveGrabber(Integer.parseInt(msg.get("value").toString())); break;
-            }
-        }
+    	skeleton.unmarshall(msg, serviceName);
     }
 
     private class ServiceListener implements Runnable {
@@ -77,13 +86,13 @@ public class Service extends SenderConnection {
                     ObjectInputStream iStream = new ObjectInputStream(new ByteArrayInputStream(buf));
                     JSONObject robotsMsg = (JSONObject) iStream.readObject();
                     handleCall(robotsMsg);
-                } catch (IOException e) {
+                }catch (ClassNotFoundException e) {
                     e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
+                }catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
         }
     }
-
 }
