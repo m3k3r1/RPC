@@ -30,7 +30,7 @@ public class Skeleton implements ISkeletonAction{
         robot.moveGrabber(percent);
     }
     public void stop() {
-    	System.out.println("move g");
+    	System.out.println("PARA");
     	robot.stop();
     }
     
@@ -52,9 +52,9 @@ public class Skeleton implements ISkeletonAction{
     			} catch (SecurityException e) {
     				e.printStackTrace();
     			}
-            }
-    	}catch(NullPointerException e) {
-        	stop();
-        }
+            }}
+    	catch(NullPointerException e) {
+    		//TODO
+    	}
     }
 }

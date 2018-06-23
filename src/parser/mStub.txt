@@ -1,1 +1,0 @@
-package %s;%spublic class %s {    %s}

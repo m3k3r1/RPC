@@ -70,7 +70,7 @@ public class Service extends SenderConnection {
     public void start(){
         new Thread(new ServiceListener()).start();
     }
-    private void handleCall(JSONObject msg){
+    public  void handleCall(JSONObject msg){
     	skeleton.unmarshall(msg, serviceName);
     }
 
@@ -85,6 +85,8 @@ public class Service extends SenderConnection {
                     socket.receive(packet);
                     ObjectInputStream iStream = new ObjectInputStream(new ByteArrayInputStream(buf));
                     JSONObject robotsMsg = (JSONObject) iStream.readObject();
+                    System.out.println("AQUI" + robotsMsg);
+
                     handleCall(robotsMsg);
                 }catch (ClassNotFoundException e) {
                     e.printStackTrace();

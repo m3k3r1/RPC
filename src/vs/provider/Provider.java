@@ -11,7 +11,7 @@ public class Provider {
     		System.out.println("Usage: java -cp Provider.jar vs.provider.Provider <broker ip> <robot name>");
     	} else {
 	        Robot robot = new Robot(args[1]);
-	        CaDSEV3RobotHAL.createInstance(CaDSEV3RobotType.SIMULATION, robot, robot);
+	        CaDSEV3RobotHAL.createInstance(CaDSEV3RobotType.REAL, robot, robot);
 	        
 	        try {
 	            //Horizontal Movement Service
@@ -46,9 +46,9 @@ public class Provider {
 	        try {
 	            //Emergency stop
 	            Skeleton skeletonStop = new Skeleton(robot);
-	            Service serviceG = new Service(9999,"stop", args[1] ,args[0], 10000 ,skeletonStop);
-	            serviceG.doRegistry();
-	            serviceG.start();
+	            Service serviceStop = new Brake(9999,"stop", args[1] ,args[0], 10000 ,skeletonStop);
+	            serviceStop.doRegistry();
+	            serviceStop.start();
 	        } catch (SocketException e) {
 	            e.printStackTrace();
 	        }

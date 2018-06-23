@@ -87,20 +87,22 @@ public class Broker  extends SenderConnection{
 			            try {
 							this.doSenderConnection(ip);
 							this.sendMessage(actionMsg, port);
-							
+				            System.out.println("AQUI");
+
 							for (Map.Entry<String, String> e : HQueue.entrySet()) {
 					            String rbt = e.getKey();
 					            String v = e.getValue();
 					            
 					            int last_v = Integer.parseInt(v);
 					            int current_v = Integer.parseInt(value);
-					                 
+					            System.out.println(last_v + " - " + current_v);
 					            if(last_v > current_v) {
+						            System.out.println("PARA!!!");
+
 					            	JSONObject msg = new JSONObject();
 					            	msg.put("para", "para");
 									this.doSenderConnection(ip);
 									this.sendMessage(msg, 9999);
-									this.sendMessage(actionMsg, port);
 					            }
 							}
 							
@@ -111,7 +113,6 @@ public class Broker  extends SenderConnection{
 		            }
 		        }
 	            HQueue.put(robot ,value);
-
 				
 		    	
 				break;
@@ -133,25 +134,21 @@ public class Broker  extends SenderConnection{
 					            
 					            int last_v = Integer.parseInt(v);
 					            int current_v = Integer.parseInt(value);
-					                 
+					               
 					            if(last_v > current_v) {
 					            	JSONObject msg = new JSONObject();
 					            	msg.put("para", "para");
 									this.doSenderConnection(ip);
-									this.sendMessage(msg, 9999);
 					            }
 							}
 						} catch (IOException e) {
 							e.printStackTrace();
-							VQueue.put(r ,value);
 						}  
 		            } 
 		        }
 				
 	            VQueue.put(robot ,value);
-
-				
-				
+								
 				break;
 			case "moveGrabber"    :
 		    	for (Map.Entry<String, String> entry : registredProvider.entrySet()) {
@@ -169,6 +166,8 @@ public class Broker  extends SenderConnection{
 						}     
 		            } 
 		        }
+		    	HQueue.clear();
+		    	VQueue.clear();
 				break;
     	}
     }
@@ -195,13 +194,11 @@ public class Broker  extends SenderConnection{
                     DatagramPacket packet = new DatagramPacket(buf, buf.length);
                     socket.receive(packet);
                     int port = packet.getPort();
-                    System.out.println("" + port);
                     String ip = packet.getAddress().toString().substring(1);
                     InetAddress IPAddress = packet.getAddress();
                     ObjectInputStream iStream = new ObjectInputStream(new ByteArrayInputStream(buf));
                     JSONObject consumerMsg = new JSONObject();
                     consumerMsg = (JSONObject) iStream.readObject() ;
-                    System.out.println(consumerMsg);
 					JSONArray header = (JSONArray) consumerMsg.get("header");
 					JSONArray remoteCall = (JSONArray) consumerMsg.get("remoteCall");
 					JSONObject head = (JSONObject) header.get(0);
