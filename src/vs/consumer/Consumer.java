@@ -10,12 +10,18 @@ import vs.connection.SenderConnection;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -27,21 +33,18 @@ public class Consumer extends ReceiverConnection implements PropertyChangeListen
     private Stub Hstub;
     private Stub Vstub;
     private Stub Gstub;
-
     private GUIController guiController;
     private CaDSRobotGUISwing gui;
     private ArrayList<String> robots;
     private ArrayList<String> oldRobots;
-
     private ArrayList<JSONObject> messages;
-
     private ArrayList<JSONObject> Hmessages;
     private ArrayList<JSONObject> Vmessages;
     private ArrayList<JSONObject> Gmessages;
 
     private String guiName;
     
-    public Consumer(String guiName, String brokerHost) {
+    public Consumer(String guiName, String brokerHost)  {
     	this.guiName = guiName;
         robots = new ArrayList<String>();
         oldRobots = new ArrayList<String>();
@@ -51,10 +54,10 @@ public class Consumer extends ReceiverConnection implements PropertyChangeListen
         Gmessages = new ArrayList<>();
 
         brokerIP = brokerHost;
+        new Thread(new HeartBeatClient(brokerHost)).start();
         //Timer timer = new Timer(true);
         //GetServices task = new GetServices();
         //timer.scheduleAtFixedRate(task, 0, 5000);
-
     }
 
     public void registerGUI(){
@@ -289,4 +292,35 @@ public class Consumer extends ReceiverConnection implements PropertyChangeListen
         }
     }
   }
+    private class HeartBeatClient extends SenderConnection implements Runnable{
+    	public HeartBeatClient(String brokerHost) {
+    		try {
+    			this.doSenderConnection(brokerHost);
+			} catch (SocketException | UnknownHostException e) {
+				e.printStackTrace();
+			} 
+    	}
+
+		@Override
+		public void run() {
+			while(true) {
+				try {
+					JSONObject obj = new JSONObject();
+					System.out.println("I'm ALIVE");
+					obj.put("heart", "beating");
+					this.sendMessage(obj, 5500);
+					Thread.sleep(500);
+				} catch (IOException  e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
+		}
+    	
+    	
+    }
 }

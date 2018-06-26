@@ -15,16 +15,17 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
-public class Broker  extends SenderConnection{
+
+public class Broker  extends SenderConnection {
     HashMap<String, String> registredConsumers;
     HashMap<String, String> registredProvider;
     HashMap<String, String> HQueue;
     HashMap<String, String> VQueue;
-    
     boolean consecH = false;
     boolean consecV = false;
 
@@ -33,13 +34,16 @@ public class Broker  extends SenderConnection{
     	registredProvider = new HashMap<>();
     	HQueue = new HashMap<>();
     	VQueue = new HashMap<>();
-   	
+    	
         new Thread(new MessagesListener(consumerPort)).start();
         new Thread(new MessagesListener(providerPort)).start();
+        new Thread(new HeartBeatServer()).start();
+
      }
     public void registerGUI(String ip, String name) {
     	registredConsumers.put(ip, name);
     	System.out.println("[REGISTRY] - " + name + " registred as a consumer in " + ip);
+    	
     }
     public void registerRobot(String ip, String name) {
     	if(registredProvider.containsKey(name)) {
@@ -178,7 +182,33 @@ public class Broker  extends SenderConnection{
 			this.sendMessage(msg, 10010);    
     	}
     }
-
+    public void emergencyBrake() {
+    	
+    	if(registredProvider.size() > 0 ) {
+    		for (Map.Entry<String, String> entry : registredProvider.entrySet()) {
+                String ip = entry.getValue();
+    	            	JSONObject msg = new JSONObject();
+    	            	msg.put("para", "para");
+    					try {
+    						this.doSenderConnection(ip);
+    						this.sendMessage(msg, 9999);
+    					} catch (SocketException e1) {
+    						// TODO Auto-generated catch block
+    						e1.printStackTrace();
+    					} catch (UnknownHostException e1) {
+    						// TODO Auto-generated catch block
+    						e1.printStackTrace();
+    					} catch (IOException e1) {
+    						// TODO Auto-generated catch block
+    						e1.printStackTrace();
+    					}
+    			           
+    			
+            }
+    	} else {
+            System.out.println("No Robots to stop yet!!!");
+    	}
+    }
     private class MessagesListener extends ReceiverConnection {
         public MessagesListener(int port) {
             try {
@@ -236,6 +266,54 @@ public class Broker  extends SenderConnection{
             }
         }
     }
+    private class HeartBeatServer extends ReceiverConnection {
+    	Timer timer;
+    	
+    	public HeartBeatServer() {
+    		try {
+    			timer = new Timer();
+				this.doReceiverConnection(5500);
+				timer.scheduleAtFixedRate(new TimerTask() {
+					  @Override
+					  public void run() {
+						  System.out.println("Emergency Break");
+						  emergencyBrake();
+					  }
+					}, 505, 1);
+			} catch (SocketException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
+    	
+    	@Override
+    	public void run() {
+    		while(true) {
+                try {
+           		 DatagramPacket packet = new DatagramPacket(buf, buf.length);
+           		 socket.receive(packet);
+           		 timer.cancel();
+           		 timer = new Timer();
+           		 timer.scheduleAtFixedRate(new TimerTask() {
+					  @Override
+					  public void run() {
+						  System.out.println("Emergency Break");
+						  emergencyBrake();
+					  }
+					}, 505, 1);
+   		         ObjectInputStream iStream = new ObjectInputStream(new ByteArrayInputStream(buf));
+   	             JSONObject heartBeatMsg = new JSONObject();
+   	             heartBeatMsg = (JSONObject) iStream.readObject();
+   	             System.out.println(heartBeatMsg);
+   			} catch (IOException | ClassNotFoundException  e) {
+   				// TODO Auto-generated catch block
+   				e.printStackTrace();
+   			}
+    		}
+    
+    	}
+    }
+ 
    
     public static void main(String[] args){
     	if(args.length <= 0) {
@@ -244,4 +322,6 @@ public class Broker  extends SenderConnection{
     	
     	new Broker(Integer.parseInt(args[0]), Integer.parseInt(args[1]));
     }
+
+
 }

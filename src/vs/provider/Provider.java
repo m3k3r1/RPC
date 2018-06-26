@@ -2,8 +2,8 @@
 
 import org.cads.ev3.middleware.CaDSEV3RobotHAL;
 import org.cads.ev3.middleware.CaDSEV3RobotType;
-
 import java.net.SocketException;
+
 
 public class Provider {
     public static void main(String[] args) {
@@ -11,8 +11,9 @@ public class Provider {
     		System.out.println("Usage: java -cp Provider.jar vs.provider.Provider <broker ip> <robot name>");
     	} else {
 	        Robot robot = new Robot(args[1]);
-	        CaDSEV3RobotHAL.createInstance(CaDSEV3RobotType.REAL, robot, robot);
+	        CaDSEV3RobotHAL.createInstance(CaDSEV3RobotType.SIMULATION, robot, robot);
 	        
+	                
 	        try {
 	            //Horizontal Movement Service
 	            Skeleton skeletonH = new Skeleton(robot);
