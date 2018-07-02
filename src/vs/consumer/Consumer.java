@@ -133,7 +133,7 @@ public class Consumer extends ReceiverConnection implements PropertyChangeListen
         String propertyName = arg0.getPropertyName();
         
         switch(propertyName) {
-        	case "horizontal":Hmessages.add(Hstub.getJSON());    break;
+        	case "horizontal":Hmessages.add(Hstub.getJSON());break;
         	case "vertical":Vmessages.add(Vstub.getJSON());break;
         	case "grabber":Gmessages.add(Gstub.getJSON());break;
         }

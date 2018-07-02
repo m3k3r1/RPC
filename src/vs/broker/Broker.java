@@ -34,6 +34,8 @@ public class Broker  extends SenderConnection {
     	registredProvider = new HashMap<>();
     	HQueue = new HashMap<>();
     	VQueue = new HashMap<>();
+    	Timer cleaner = new Timer();
+    	cleaner.scheduleAtFixedRate(new CacheCleaner(), 0, 5000);
     	
         new Thread(new MessagesListener(consumerPort)).start();
         new Thread(new MessagesListener(providerPort)).start();
@@ -85,13 +87,14 @@ public class Broker  extends SenderConnection {
 		            String service = entry.getKey();
 		            String ip = entry.getValue();
 		            String r = service.split("/")[0];
+		            String move = service.split("/")[1];
+		            move = move.split(":")[0];
 
-		            if(r.equals(robot)) {
+		            if(r.equals(robot)&& move.equals(method)) {
 			            int port = Integer.parseInt(service.split(":")[1]); 
 			            try {
 							this.doSenderConnection(ip);
 							this.sendMessage(actionMsg, port);
-				            System.out.println("AQUI");
 
 							for (Map.Entry<String, String> e : HQueue.entrySet()) {
 					            String rbt = e.getKey();
@@ -100,13 +103,14 @@ public class Broker  extends SenderConnection {
 					            int last_v = Integer.parseInt(v);
 					            int current_v = Integer.parseInt(value);
 					            System.out.println(last_v + " - " + current_v);
-					            if(last_v > current_v) {
+					           if(last_v > current_v) {
 						            System.out.println("PARA!!!");
 
 					            	JSONObject msg = new JSONObject();
 					            	msg.put("para", "para");
 									this.doSenderConnection(ip);
 									this.sendMessage(msg, 9999);
+									this.sendMessage(actionMsg, port);
 					            }
 							}
 							
@@ -125,8 +129,10 @@ public class Broker  extends SenderConnection {
 		            String service = entry.getKey();
 		            String ip = entry.getValue();
 		            String r = service.split("/")[0];
+		            String move = service.split("/")[1];
+		            move = move.split(":")[0];
 		            
-		            if(r.equals(robot)) {
+		            if(r.equals(robot) && move.equals(method)) {
 			            int port = Integer.parseInt(service.split(":")[1]); 
 			            try {
 							this.doSenderConnection(ip);
@@ -138,11 +144,14 @@ public class Broker  extends SenderConnection {
 					            
 					            int last_v = Integer.parseInt(v);
 					            int current_v = Integer.parseInt(value);
-					               
-					            if(last_v > current_v) {
+					            System.out.println(last_v + " - " + current_v);
+
+					           if(last_v > current_v) {
 					            	JSONObject msg = new JSONObject();
 					            	msg.put("para", "para");
 									this.doSenderConnection(ip);
+									this.sendMessage(msg, 9999);
+									this.sendMessage(actionMsg, port);
 					            }
 							}
 						} catch (IOException e) {
@@ -159,8 +168,10 @@ public class Broker  extends SenderConnection {
 		            String service = entry.getKey();
 		            String ip = entry.getValue();
 		            String r = service.split("/")[0];
+		            String move = service.split("/")[1];
+		            move = move.split(":")[0];
 
-		            if(r.equals(robot)) {
+		            if(r.equals(robot) && move.equals(method)) {
 			            int port = Integer.parseInt(service.split(":")[1]); 
 			            try {
 							this.doSenderConnection(ip);
@@ -206,7 +217,7 @@ public class Broker  extends SenderConnection {
     			
             }
     	} else {
-            System.out.println("No Robots to stop yet!!!");
+            //System.out.println("No Robots to stop yet!!!");
     	}
     }
     private class MessagesListener extends ReceiverConnection {
@@ -276,10 +287,9 @@ public class Broker  extends SenderConnection {
 				timer.scheduleAtFixedRate(new TimerTask() {
 					  @Override
 					  public void run() {
-						  System.out.println("Emergency Break");
 						  emergencyBrake();
 					  }
-					}, 505, 1);
+					}, 505, 500);
 			} catch (SocketException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -297,14 +307,12 @@ public class Broker  extends SenderConnection {
            		 timer.scheduleAtFixedRate(new TimerTask() {
 					  @Override
 					  public void run() {
-						  System.out.println("Emergency Break");
 						  emergencyBrake();
 					  }
-					}, 505, 1);
+					}, 505, 500);
    		         ObjectInputStream iStream = new ObjectInputStream(new ByteArrayInputStream(buf));
    	             JSONObject heartBeatMsg = new JSONObject();
    	             heartBeatMsg = (JSONObject) iStream.readObject();
-   	             System.out.println(heartBeatMsg);
    			} catch (IOException | ClassNotFoundException  e) {
    				// TODO Auto-generated catch block
    				e.printStackTrace();
@@ -313,8 +321,15 @@ public class Broker  extends SenderConnection {
     
     	}
     }
- 
-   
+    private class CacheCleaner extends TimerTask{
+		@Override
+		public void run() {
+			HQueue.clear();
+			VQueue.clear();
+			System.out.println("Clearing cache");
+		}
+    }
+    
     public static void main(String[] args){
     	if(args.length <= 0) {
     		System.out.println("Usage: java -jar Broker.jar <provider port> <consumer port>");
@@ -322,6 +337,4 @@ public class Broker  extends SenderConnection {
     	
     	new Broker(Integer.parseInt(args[0]), Integer.parseInt(args[1]));
     }
-
-
 }
